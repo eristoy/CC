@@ -3,12 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-02-25T21:49:00Z"
+last_updated: "2026-02-25T21:52:50.287Z"
 progress:
   total_phases: 1
   completed_phases: 0
   total_plans: 5
-  completed_plans: 3
+  completed_plans: 4
+  current_plan: 4
 ---
 
 # Project State
@@ -23,27 +24,27 @@ See: .planning/PROJECT.md (updated 2026-02-25)
 ## Current Position
 
 Phase: 1 of 6 (Backup Engine)
-Plan: 3 of 5 in current phase
+Plan: 4 of 5 in current phase
 Status: In progress
-Last activity: 2026-02-25 — Completed plan 01-03 (FileCopyPipeline + LocalDestinationAdapter — 9 tests pass, xxHash64 inline checksums, APFS clone fallback)
+Last activity: 2026-02-25 — Completed plan 01-04 (VersionManager TDD — 9 tests pass, BackupManifest + ManifestEntry, collision-safe version IDs, walk-and-collect pruning)
 
-Progress: [███░░░░░░░] 12% (3 of 25 total plans estimated)
+Progress: [████░░░░░░] 16% (4 of 25 total plans estimated)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
+- Total plans completed: 4
 - Average duration: 6 min
-- Total execution time: 0.3 hours
+- Total execution time: 0.4 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-backup-engine | 3/5 complete | 18 min | 6 min |
+| 01-backup-engine | 4/5 complete | 24 min | 6 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (6 min), 01-02 (8 min), 01-03 (4 min)
+- Last 5 plans: 01-01 (6 min), 01-02 (8 min), 01-03 (4 min), 01-04 (6 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -69,6 +70,9 @@ Recent decisions affecting current work:
 - **[01-03]** APFS clone path reads destination once post-clone for checksum; chunked path hashes inline — zero extra I/O in both dominant cases
 - **[01-03]** LocalDestinationAdapter.pruneVersions is documented no-op stub — VersionManager (01-04) orchestrates deletion lifecycle
 - **[01-03]** VersionManager stub created to allow VersionManagerTests.swift (TDD RED for 01-04) to compile
+- [Phase 01-04]: Corrupt versions kept in DB (status=corrupt), excluded from retention count, never pruned — surface in Phase 3 history UI with warning
+- [Phase 01-04]: Walk-and-collect pruning: iterate all verified versions oldest-first, collect up to excessCount non-locked candidates — prefix+filter approach was incorrect when locked versions are in pruning window
+- [Phase 01-04]: Write-then-cleanup pattern: status=deleting set in single DB write transaction before disk deletion — crash-safe, BackupEngine re-processes deleting rows at startup
 
 ### Pending Todos
 
@@ -86,5 +90,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-25
-Stopped at: Completed 01-03-PLAN.md — FileCopyPipeline + LocalDestinationAdapter implemented (9 tests pass); DestinationAdapter protocol + TransferProgress + DestinationStatus exported; ready for plan 01-04 (BackupOrchestrator/VersionManager)
+Stopped at: Completed 01-04-PLAN.md — VersionManager TDD (9 tests pass); BackupManifest + ManifestEntry exported; walk-and-collect pruning with write-then-cleanup; ready for plan 01-05 (BackupEngine actor + integration tests)
 Resume file: None

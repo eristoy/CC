@@ -30,7 +30,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **BACK-02**: Backup is incremental — unchanged files are skipped
 - [x] **BACK-03**: Each file is checksum-verified after copy to detect silent corruption
 - [x] **BACK-04**: App retains N versions per project (configurable, default: 10)
-- [ ] **BACK-05**: App automatically prunes oldest versions when over limit
+- [x] **BACK-05**: App automatically prunes oldest versions when over limit
 
 ### Destinations
 
@@ -95,8 +95,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | BACK-01 | Phase 1 | Complete |
 | BACK-02 | Phase 1 | Complete |
 | BACK-03 | Phase 1 | Complete |
-| BACK-04 | Phase 1 | Pending |
-| BACK-05 | Phase 1 | Pending |
+| BACK-04 | Phase 1 | Complete |
+| BACK-05 | Phase 1 | Complete |
 | DEST-01 | Phase 1 | Complete |
 | APP-01 | Phase 2 | Pending |
 | APP-02 | Phase 2 | Pending |

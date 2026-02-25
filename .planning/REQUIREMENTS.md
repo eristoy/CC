@@ -29,12 +29,12 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **BACK-01**: App copies project folder + all collected samples to each configured destination
 - [ ] **BACK-02**: Backup is incremental — unchanged files are skipped
 - [ ] **BACK-03**: Each file is checksum-verified after copy to detect silent corruption
-- [ ] **BACK-04**: App retains N versions per project (configurable, default: 10)
+- [x] **BACK-04**: App retains N versions per project (configurable, default: 10)
 - [ ] **BACK-05**: App automatically prunes oldest versions when over limit
 
 ### Destinations
 
-- [ ] **DEST-01**: User can configure a local attached drive destination
+- [x] **DEST-01**: User can configure a local attached drive destination
 - [ ] **DEST-02**: User can configure a NAS destination via already-mounted Mac volume
 - [ ] **DEST-03**: User can configure a NAS destination via direct SMB/NFS with stored credentials
 - [ ] **DEST-04**: User can configure iCloud Drive as a destination (no auth required)

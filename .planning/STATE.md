@@ -10,27 +10,27 @@ See: .planning/PROJECT.md (updated 2026-02-25)
 ## Current Position
 
 Phase: 1 of 6 (Backup Engine)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-02-25 — Roadmap created; 28 v1 requirements mapped across 6 phases
+Plan: 1 of 5 in current phase
+Status: In progress
+Last activity: 2026-02-25 — Completed plan 01-01 (GRDB schema + persistence foundation)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█░░░░░░░░░] 4% (1 of 25 total plans estimated)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: —
-- Total execution time: 0 hours
+- Total plans completed: 1
+- Average duration: 6 min
+- Total execution time: 0.1 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 01-backup-engine | 1/5 complete | 6 min | 6 min |
 
 **Recent Trend:**
-- Last 5 plans: —
+- Last 5 plans: 01-01 (6 min)
 - Trend: —
 
 *Updated after each plan completion*
@@ -45,6 +45,10 @@ Recent decisions affecting current work:
 - Swift 6 + SwiftUI MenuBarExtra + GRDB.swift confirmed as stack (research phase)
 - Distribute outside Mac App Store initially — sandbox restrictions conflict with FSEvents bookmarks and NetFS
 - GitHub/Git LFS destination ships last (Phase 6) — highest complexity, narrowest audience
+- **[01-01]** xxHash-Swift 1.1.1 resolved successfully — included (no CryptoKit fallback needed)
+- **[01-01]** makeInMemory() uses temp-file DatabasePool (not :memory:) — WAL mode requires real file path
+- **[01-01]** VersionStatus defined in separate file for clean imports across modules
+- **[01-01]** ProjectResolver.swift stub created — satisfies compilation of plan 01-02 TDD RED test file
 
 ### Pending Todos
 
@@ -62,5 +66,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-25
-Stopped at: Roadmap created, STATE.md initialized — ready to plan Phase 1
+Stopped at: Completed 01-01-PLAN.md — GRDB schema and persistence models complete; ready for plan 01-02 (ProjectResolver TDD)
 Resume file: None

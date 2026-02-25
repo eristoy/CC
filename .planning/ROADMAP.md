@@ -34,7 +34,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 5 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Xcode/SPM project setup, GRDB 7 schema, and all persistence model types
+- [x] 01-01-PLAN.md — Xcode/SPM project setup, GRDB 7 schema, and all persistence model types
 - [ ] 01-02-PLAN.md — TDD: ProjectResolver (folder walker) and BackupJob contract types
 - [ ] 01-03-PLAN.md — FileCopyPipeline (inline checksum + APFS clone) and LocalDestinationAdapter
 - [ ] 01-04-PLAN.md — TDD: VersionManager (ID generation, retention enforcement, safe pruning)
@@ -106,7 +106,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Backup Engine | 0/TBD | Not started | - |
+| 1. Backup Engine | 1/5 | In progress | - |
 | 2. App Shell + Triggers | 0/TBD | Not started | - |
 | 3. Settings + History | 0/TBD | Not started | - |
 | 4. Network Destinations | 0/TBD | Not started | - |

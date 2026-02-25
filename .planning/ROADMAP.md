@@ -31,7 +31,14 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. After copy, each file's checksum is verified against the source; a corrupted file causes the version to be marked corrupt, not verified
   4. After N+1 backups, the oldest version is automatically pruned; N is configurable
   5. A local attached drive can be configured as a destination and receives backup output
-**Plans**: TBD
+**Plans**: 5 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Xcode/SPM project setup, GRDB 7 schema, and all persistence model types
+- [ ] 01-02-PLAN.md — TDD: ProjectResolver (folder walker) and BackupJob contract types
+- [ ] 01-03-PLAN.md — FileCopyPipeline (inline checksum + APFS clone) and LocalDestinationAdapter
+- [ ] 01-04-PLAN.md — TDD: VersionManager (ID generation, retention enforcement, safe pruning)
+- [ ] 01-05-PLAN.md — BackupEngine actor orchestration and end-to-end integration tests
 
 ### Phase 2: App Shell + Triggers
 **Goal**: The app runs silently as a macOS menu bar utility, watches for Ableton saves, and backs up automatically with visible status

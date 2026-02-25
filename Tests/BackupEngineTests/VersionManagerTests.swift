@@ -131,7 +131,7 @@ struct VersionManagerTests {
         defer { try? FileManager.default.removeItem(atPath: tempDir) }
 
         let ids = try insertVerifiedVersions(count: 5, projectID: projectID, destID: destID, db: db)
-        // Create fake version dirs so FileManager.removeItem doesn't crash
+        // Create fake version dirs so FileManager.removeItem does not crash
         for id in ids {
             let versionDir = (tempDir as NSString).appendingPathComponent(id)
             try FileManager.default.createDirectory(atPath: versionDir, withIntermediateDirectories: true)
@@ -183,7 +183,7 @@ struct VersionManagerTests {
         #expect(deleted.count == 1, "Expected exactly 1 version pruned (11 - 10 = 1)")
         #expect(deleted[0] == ids[0], "Oldest version (index 0) should be pruned first")
 
-        // Verify 10 remain as verified, 1 as deleting
+        // Verify 10 remain as verified
         let verified = try await db.pool.read { db in
             try BackupVersion
                 .filter(Column("projectID") == projectID && Column("destinationID") == destID && Column("status") == VersionStatus.verified.rawValue)
@@ -230,7 +230,7 @@ struct VersionManagerTests {
 
     // MARK: Pruning — Corrupt Versions
 
-    @Test("pruneOldVersions: corrupt versions excluded from count — 8 verified + 3 corrupt, retention=10 → nothing pruned")
+    @Test("pruneOldVersions: corrupt versions excluded from count — 8 verified + 3 corrupt, retention=10 — nothing pruned")
     func testCorruptVersionsExcludedFromRetentionCount() async throws {
         let db = try AppDatabase.makeInMemory()
         let (projectID, destID) = try seedProjectAndDestination(db: db)
@@ -242,14 +242,16 @@ struct VersionManagerTests {
 
         // Insert 8 verified and 3 corrupt versions (total 11, but only 8 are verified)
         let verifiedIDs = try insertVerifiedVersions(count: 8, projectID: projectID, destID: destID, db: db)
+        var corruptIDs: [String] = []
         for i in 0..<3 {
             let corruptID = try insertVersion(
                 status: .corrupt,
                 projectID: projectID,
                 destID: destID,
                 db: db,
-                offset: Double(100 + i)  // Different offset to avoid ID collision
+                offset: Double(100 + i)
             )
+            corruptIDs.append(corruptID)
             let versionDir = (tempDir as NSString).appendingPathComponent(corruptID)
             try FileManager.default.createDirectory(atPath: versionDir, withIntermediateDirectories: true)
         }
@@ -266,7 +268,7 @@ struct VersionManagerTests {
             db: db.pool
         )
 
-        #expect(deleted.isEmpty, "Corrupt versions don't count toward retention — 8 verified < 10, so nothing pruned")
+        #expect(deleted.isEmpty, "Corrupt versions do not count toward retention — 8 verified < 10, so nothing pruned")
 
         // Corrupt versions must still exist
         let corruptVersions = try await db.pool.read { db in
@@ -279,7 +281,7 @@ struct VersionManagerTests {
 
     // MARK: Pruning — Locked Versions
 
-    @Test("pruneOldVersions: locked version skipped even when excess — 11 verified, 1 locked → locked is kept, 10 remain verified")
+    @Test("pruneOldVersions: locked version skipped even when excess — 11 verified, 1 locked, locked is kept")
     func testLockedVersionSkippedDuringPruning() async throws {
         let db = try AppDatabase.makeInMemory()
         let (projectID, destID) = try seedProjectAndDestination(db: db)

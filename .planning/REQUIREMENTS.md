@@ -26,8 +26,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Backup Engine
 
-- [ ] **BACK-01**: App copies project folder + all collected samples to each configured destination
-- [ ] **BACK-02**: Backup is incremental — unchanged files are skipped
+- [x] **BACK-01**: App copies project folder + all collected samples to each configured destination
+- [x] **BACK-02**: Backup is incremental — unchanged files are skipped
 - [ ] **BACK-03**: Each file is checksum-verified after copy to detect silent corruption
 - [x] **BACK-04**: App retains N versions per project (configurable, default: 10)
 - [ ] **BACK-05**: App automatically prunes oldest versions when over limit
@@ -92,8 +92,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| BACK-01 | Phase 1 | Pending |
-| BACK-02 | Phase 1 | Pending |
+| BACK-01 | Phase 1 | Complete |
+| BACK-02 | Phase 1 | Complete |
 | BACK-03 | Phase 1 | Pending |
 | BACK-04 | Phase 1 | Pending |
 | BACK-05 | Phase 1 | Pending |

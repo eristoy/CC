@@ -92,40 +92,40 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| APP-01 | — | Pending |
-| APP-02 | — | Pending |
-| APP-03 | — | Pending |
-| APP-04 | — | Pending |
-| DISC-01 | — | Pending |
-| DISC-02 | — | Pending |
-| DISC-03 | — | Pending |
-| TRIG-01 | — | Pending |
-| TRIG-02 | — | Pending |
-| TRIG-03 | — | Pending |
-| PRSR-01 | — | Pending |
-| PRSR-02 | — | Pending |
-| BACK-01 | — | Pending |
-| BACK-02 | — | Pending |
-| BACK-03 | — | Pending |
-| BACK-04 | — | Pending |
-| BACK-05 | — | Pending |
-| DEST-01 | — | Pending |
-| DEST-02 | — | Pending |
-| DEST-03 | — | Pending |
-| DEST-04 | — | Pending |
-| DEST-05 | — | Pending |
-| DEST-06 | — | Pending |
-| DEST-07 | — | Pending |
-| NOTIF-01 | — | Pending |
-| NOTIF-02 | — | Pending |
-| HIST-01 | — | Pending |
-| HIST-02 | — | Pending |
+| BACK-01 | Phase 1 | Pending |
+| BACK-02 | Phase 1 | Pending |
+| BACK-03 | Phase 1 | Pending |
+| BACK-04 | Phase 1 | Pending |
+| BACK-05 | Phase 1 | Pending |
+| DEST-01 | Phase 1 | Pending |
+| APP-01 | Phase 2 | Pending |
+| APP-02 | Phase 2 | Pending |
+| APP-03 | Phase 2 | Pending |
+| DISC-01 | Phase 2 | Pending |
+| TRIG-01 | Phase 2 | Pending |
+| TRIG-02 | Phase 2 | Pending |
+| TRIG-03 | Phase 2 | Pending |
+| NOTIF-01 | Phase 2 | Pending |
+| NOTIF-02 | Phase 2 | Pending |
+| APP-04 | Phase 3 | Pending |
+| DISC-02 | Phase 3 | Pending |
+| DISC-03 | Phase 3 | Pending |
+| HIST-01 | Phase 3 | Pending |
+| HIST-02 | Phase 3 | Pending |
+| DEST-02 | Phase 4 | Pending |
+| DEST-03 | Phase 4 | Pending |
+| DEST-04 | Phase 4 | Pending |
+| DEST-06 | Phase 4 | Pending |
+| DEST-07 | Phase 4 | Pending |
+| PRSR-01 | Phase 5 | Pending |
+| PRSR-02 | Phase 5 | Pending |
+| DEST-05 | Phase 6 | Pending |
 
 **Coverage:**
 - v1 requirements: 28 total
-- Mapped to phases: 0 (roadmap pending)
-- Unmapped: 28 ⚠️
+- Mapped to phases: 28
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-25*
-*Last updated: 2026-02-25 after initial definition*
+*Last updated: 2026-02-25 after roadmap creation*

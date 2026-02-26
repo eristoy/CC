@@ -12,7 +12,7 @@ AbletonBackup is built foundation-first: a correct, verified backup engine ships
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Backup Engine** - Core file copy, checksum verification, versioning, and local destination — no UI
+- [x] **Phase 1: Backup Engine** - Core file copy, checksum verification, versioning, and local destination — no UI (COMPLETE 2026-02-26)
 - [ ] **Phase 2: App Shell + Triggers** - LSUIElement app, menu bar icon, FSEvents watch, schedule, manual trigger, notifications
 - [ ] **Phase 3: Settings + History** - Settings window, watch folder management, version history browser
 - [ ] **Phase 4: Network Destinations** - NAS (SMB/NFS), iCloud Drive, per-destination status, sleep/wake reconnection
@@ -35,10 +35,10 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 Plans:
 - [x] 01-01-PLAN.md — Xcode/SPM project setup, GRDB 7 schema, and all persistence model types
-- [ ] 01-02-PLAN.md — TDD: ProjectResolver (folder walker) and BackupJob contract types
-- [ ] 01-03-PLAN.md — FileCopyPipeline (inline checksum + APFS clone) and LocalDestinationAdapter
-- [ ] 01-04-PLAN.md — TDD: VersionManager (ID generation, retention enforcement, safe pruning)
-- [ ] 01-05-PLAN.md — BackupEngine actor orchestration and end-to-end integration tests
+- [x] 01-02-PLAN.md — TDD: ProjectResolver (folder walker) and BackupJob contract types
+- [x] 01-03-PLAN.md — FileCopyPipeline (inline checksum + APFS clone) and LocalDestinationAdapter
+- [x] 01-04-PLAN.md — TDD: VersionManager (ID generation, retention enforcement, safe pruning)
+- [x] 01-05-PLAN.md — BackupEngine actor orchestration and end-to-end integration tests
 
 ### Phase 2: App Shell + Triggers
 **Goal**: The app runs silently as a macOS menu bar utility, watches for Ableton saves, and backs up automatically with visible status
@@ -106,7 +106,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Backup Engine | 4/5 | In Progress|  |
+| 1. Backup Engine | 5/5 | Complete | 2026-02-26 |
 | 2. App Shell + Triggers | 0/TBD | Not started | - |
 | 3. Settings + History | 0/TBD | Not started | - |
 | 4. Network Destinations | 0/TBD | Not started | - |

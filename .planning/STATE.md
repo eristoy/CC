@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: unknown
-last_updated: "2026-02-25T21:52:50.287Z"
+status: phase-complete
+last_updated: "2026-02-26T21:49:06Z"
 progress:
   total_phases: 1
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 5
-  completed_plans: 4
-  current_plan: 4
+  completed_plans: 5
+  current_plan: 5
 ---
 
 # Project State
@@ -23,12 +23,12 @@ See: .planning/PROJECT.md (updated 2026-02-25)
 
 ## Current Position
 
-Phase: 1 of 6 (Backup Engine)
-Plan: 4 of 5 in current phase
-Status: In progress
-Last activity: 2026-02-25 — Completed plan 01-04 (VersionManager TDD — 9 tests pass, BackupManifest + ManifestEntry, collision-safe version IDs, walk-and-collect pruning)
+Phase: 1 of 6 (Backup Engine) — COMPLETE
+Plan: 5 of 5 in current phase — COMPLETE
+Status: Phase 1 complete — ready for Phase 2
+Last activity: 2026-02-26 — Completed plan 01-05 (BackupEngine actor + 6 integration tests; all Phase 1 ROADMAP success criteria verified; GRDB date-precision incremental skip bug fixed)
 
-Progress: [████░░░░░░] 16% (4 of 25 total plans estimated)
+Progress: [█████░░░░░] 20% (5 of 25 total plans estimated)
 
 ## Performance Metrics
 
@@ -41,11 +41,11 @@ Progress: [████░░░░░░] 16% (4 of 25 total plans estimated)
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-backup-engine | 4/5 complete | 24 min | 6 min |
+| 01-backup-engine | 5/5 complete | 119 min | 24 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (6 min), 01-02 (8 min), 01-03 (4 min), 01-04 (6 min)
-- Trend: Stable
+- Last 5 plans: 01-01 (6 min), 01-02 (8 min), 01-03 (4 min), 01-04 (6 min), 01-05 (95 min)
+- Trend: Plan 01-05 was significantly longer due to debugging GRDB date-precision bug in incremental skip logic
 
 *Updated after each plan completion*
 
@@ -73,6 +73,9 @@ Recent decisions affecting current work:
 - [Phase 01-04]: Corrupt versions kept in DB (status=corrupt), excluded from retention count, never pruned — surface in Phase 3 history UI with warning
 - [Phase 01-04]: Walk-and-collect pruning: iterate all verified versions oldest-first, collect up to excessCount non-locked candidates — prefix+filter approach was incorrect when locked versions are in pruning window
 - [Phase 01-04]: Write-then-cleanup pattern: status=deleting set in single DB write transaction before disk deletion — crash-safe, BackupEngine re-processes deleting rows at startup
+- **[01-05]** FileEntry cache over BackupFileRecord cache: GRDB truncates Date to milliseconds; filesystem mtime has nanosecond precision — comparing DB-fetched mtime to current filesystem mtime causes all files to appear "changed" on second backup. Fix: actor-local FileEntry cache bypasses DB round-trip.
+- **[01-05]** WAL write-barrier: pool.write (not pool.read) for step 7 allRecords fetch ensures just-inserted records are visible — WAL snapshot isolation on pool.read can miss writes from same async context.
+- **[01-05]** Full checksum verification (re-read all destination files) chosen over spot-check — correctness over speed for Phase 1; Phase 3 can add deep-verify toggle if needed.
 
 ### Pending Todos
 
@@ -89,6 +92,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-25
-Stopped at: Completed 01-04-PLAN.md — VersionManager TDD (9 tests pass); BackupManifest + ManifestEntry exported; walk-and-collect pruning with write-then-cleanup; ready for plan 01-05 (BackupEngine actor + integration tests)
+Last session: 2026-02-26
+Stopped at: Completed 01-05-PLAN.md — BackupEngine actor + 6 integration tests (41 total tests pass); Phase 1 complete; ready for Phase 2 (FSEvents watcher + app shell)
 Resume file: None

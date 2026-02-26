@@ -17,7 +17,15 @@ public actor BackupEngine {
     /// Destination adapters keyed by their ID.
     private var adapters: [String: any DestinationAdapter]
     /// Running jobs keyed by projectID — used for deduplication.
+    /// Each entry is a Task that can be joined by concurrent callers.
     private var runningJobs: [String: Task<BackupJobResult, Error>]
+    /// FileEntry cache keyed by projectID → relativePath → FileEntry.
+    ///
+    /// Stores the last verified FileEntry for each file (filesystem-precision mtime/size).
+    /// Using FileEntry directly avoids the millisecond truncation that occurs when
+    /// Date values are stored and retrieved from SQLite via GRDB, which would cause
+    /// `entry.mtime > prev.sourceMtime` to return true for unchanged files.
+    private var fileEntryCache: [String: [String: FileEntry]]
 
     // MARK: - Init
 
@@ -25,6 +33,7 @@ public actor BackupEngine {
         self.db = db
         self.adapters = Dictionary(uniqueKeysWithValues: adapters.map { ($0.id, $0) })
         self.runningJobs = [:]
+        self.fileEntryCache = [:]
     }
 
     // MARK: - Public API
@@ -43,7 +52,9 @@ public actor BackupEngine {
             return try await existing.value
         }
 
-        let task = Task {
+        // Start the job as an unstructured Task so concurrent callers can join it.
+        // The Task inherits actor isolation (runs on BackupEngine's executor).
+        let task = Task { [self] in
             try await self.executeJob(job)
         }
         runningJobs[job.project.id] = task
@@ -63,18 +74,34 @@ public actor BackupEngine {
         // 1. Resolve all files in the project directory.
         let allFiles = try ProjectResolver.resolve(at: URL(fileURLWithPath: project.path))
 
-        // 2. Fetch previous manifest for incremental comparison (most recent verified version).
-        let previousRecords = try await fetchPreviousManifest(projectID: project.id)
-        let previousByPath = Dictionary(uniqueKeysWithValues: previousRecords.map { ($0.relativePath, $0) })
+        // 2. Read the previous FileEntry cache for this project.
+        //    Using FileEntry values (filesystem-precision mtime) avoids the mtime truncation
+        //    that would occur if we compared against DB-fetched BackupFileRecord.sourceMtime,
+        //    which is truncated to millisecond precision by GRDB's ISO8601 date storage.
+        let previousEntries = fileEntryCache[project.id] ?? [:]
 
         // 3. Apply incremental filter: only copy files that changed since last verified backup.
+        //    Build a synthetic BackupFileRecord from the cached FileEntry for needsCopy comparison.
         var filesToCopy: [FileEntry] = []
         var skippedCount = 0
         for file in allFiles {
-            if ProjectResolver.needsCopy(entry: file, previousRecord: previousByPath[file.relativePath]) {
-                filesToCopy.append(file)
+            if let cached = previousEntries[file.relativePath] {
+                // Construct a minimal BackupFileRecord from cached FileEntry for comparison.
+                // This keeps mtime at filesystem precision — no DB round-trip truncation.
+                let synthetic = BackupFileRecord(
+                    versionID: "",
+                    relativePath: cached.relativePath,
+                    sourceMtime: cached.mtime,
+                    sourceSize: Int(cached.size)
+                )
+                if ProjectResolver.needsCopy(entry: file, previousRecord: synthetic) {
+                    filesToCopy.append(file)
+                } else {
+                    skippedCount += 1
+                }
             } else {
-                skippedCount += 1
+                // No previous record — new file, always copy.
+                filesToCopy.append(file)
             }
         }
 
@@ -134,7 +161,9 @@ public actor BackupEngine {
         }
 
         // 7. Build manifest from the records now in the database.
-        let allRecords = try await db.pool.read { db in
+        //    Use pool.write (not read) to ensure we see the records just inserted above,
+        //    avoiding any WAL snapshot isolation that could miss recently committed writes.
+        let allRecords = try await db.pool.write { db in
             try BackupFileRecord
                 .filter(Column("versionID") == versionID)
                 .fetchAll(db)
@@ -219,6 +248,22 @@ public actor BackupEngine {
             }
         }
 
+        // 12. Update the FileEntry cache so the next backup has incremental data.
+        //     We store FileEntry values (filesystem-precision mtime/size) rather than
+        //     DB-fetched records to avoid millisecond truncation in future comparisons.
+        //     For files that were copied this run: use the new FileEntry from allFiles.
+        //     For files that were skipped this run: preserve the previous cached FileEntry.
+        if allVerified {
+            var nextCache = previousEntries  // start with all previous entries (covers skipped files)
+            // Build a lookup of current FileEntry by relativePath
+            let currentByPath = Dictionary(uniqueKeysWithValues: allFiles.map { ($0.relativePath, $0) })
+            // Override with current entries for files that were copied
+            for file in filesToCopy {
+                nextCache[file.relativePath] = currentByPath[file.relativePath] ?? file
+            }
+            fileEntryCache[project.id] = nextCache
+        }
+
         let finalStatus: VersionStatus = allVerified ? .verified : .corrupt
         return BackupJobResult(
             versionID: versionID,
@@ -240,25 +285,6 @@ public actor BackupEngine {
                 sql: "UPDATE backupVersion SET status = ? WHERE id = ?",
                 arguments: [status.rawValue, versionID]
             )
-        }
-    }
-
-    /// Fetch BackupFileRecord rows from the most recent verified version for this project.
-    ///
-    /// Returns an empty array if no verified version exists yet (first backup).
-    private func fetchPreviousManifest(projectID: String) async throws -> [BackupFileRecord] {
-        try await db.pool.read { db in
-            guard let latestVersion = try BackupVersion
-                .filter(Column("projectID") == projectID)
-                .filter(Column("status") == VersionStatus.verified.rawValue)
-                .order(Column("createdAt").desc)
-                .fetchOne(db) else {
-                return []
-            }
-
-            return try BackupFileRecord
-                .filter(Column("versionID") == latestVersion.id)
-                .fetchAll(db)
         }
     }
 }

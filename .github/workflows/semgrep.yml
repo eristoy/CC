@@ -1,0 +1,29 @@
+name: Semgrep SAST
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  semgrep:
+    runs-on: ubuntu-latest
+
+    container:
+      image: returntocorp/semgrep
+
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Semgrep
+        run: semgrep scan --sarif --config auto . > semgrep.sarif
+
+      - name: Upload results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: semgrep.sarif

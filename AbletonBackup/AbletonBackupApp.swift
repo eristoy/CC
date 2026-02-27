@@ -10,14 +10,7 @@ struct AbletonBackupApp: App {
                 .environment(coordinator)
         } label: {
             // Dynamic icon driven by BackupCoordinator.status (@Observable)
-            switch coordinator.status {
-            case .idle:
-                Label("AbletonBackup", systemImage: coordinator.statusIcon)
-            case .running:
-                Label("AbletonBackup", systemImage: coordinator.statusIcon)
-            case .error:
-                Label("AbletonBackup", systemImage: coordinator.statusIcon)
-            }
+            Label("AbletonBackup", systemImage: coordinator.statusIcon)
         }
         .menuBarExtraStyle(.menu)   // Standard dropdown menu (not floating window)
     }

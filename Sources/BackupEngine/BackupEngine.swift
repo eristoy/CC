@@ -1,5 +1,6 @@
 import Foundation
 import GRDB
+import OSLog
 
 // MARK: - BackupEngine
 
@@ -13,6 +14,7 @@ import GRDB
 /// - Deduplicates concurrent runJob() calls for the same project
 public actor BackupEngine {
 
+    private let logger = Logger(subsystem: "com.abletonbackup", category: "BackupEngine")
     private let db: AppDatabase
     /// Destination adapters keyed by their ID.
     private var adapters: [String: any DestinationAdapter]
@@ -49,6 +51,7 @@ public actor BackupEngine {
     public func runJob(_ job: BackupJob) async throws -> BackupJobResult {
         // Deduplication: if a job is already running for this project, join it.
         if let existing = runningJobs[job.project.id] {
+            logger.debug("runJob: deduplication — joining in-flight task for project=\(job.project.id, privacy: .public)")
             return try await existing.value
         }
 
@@ -70,6 +73,8 @@ public actor BackupEngine {
         guard !targetAdapters.isEmpty else {
             throw BackupEngineError.noDestinationsConfigured
         }
+
+        logger.info("executeJob: start — project=\(project.id, privacy: .public) destinations=\(targetAdapters.map(\.id), privacy: .public)")
 
         // 1. Resolve all files in the project directory.
         let allFiles = try ProjectResolver.resolve(at: URL(fileURLWithPath: project.path))
@@ -104,6 +109,8 @@ public actor BackupEngine {
                 filesToCopy.append(file)
             }
         }
+
+        logger.info("executeJob: incremental filter — copy=\(filesToCopy.count) skipped=\(skippedCount)")
 
         // 4. Create a pending BackupVersion row for each destination.
         let versionID = VersionManager.newVersionID()
@@ -159,6 +166,8 @@ public actor BackupEngine {
                 destinationResults.append(result)
             }
         }
+
+        logger.info("executeJob: fan-out complete — results=\(destinationResults.map { "\($0.destinationID):\($0.status)" }, privacy: .public)")
 
         // 7. Build manifest from the records now in the database.
         //    Use pool.write (not read) to ensure we see the records just inserted above,
@@ -265,6 +274,7 @@ public actor BackupEngine {
         }
 
         let finalStatus: VersionStatus = allVerified ? .verified : .corrupt
+        logger.info("executeJob: complete — versionID=\(versionID, privacy: .public) status=\(finalStatus.rawValue, privacy: .public)")
         return BackupJobResult(
             versionID: versionID,
             projectID: project.id,
@@ -280,11 +290,16 @@ public actor BackupEngine {
 
     /// Update the status of a version across all its DB rows (all destinations share the same versionID).
     private func updateVersionStatus(versionID: String, status: VersionStatus) async throws {
-        try await db.pool.write { db in
-            try db.execute(
-                sql: "UPDATE backupVersion SET status = ? WHERE id = ?",
-                arguments: [status.rawValue, versionID]
-            )
+        do {
+            try await db.pool.write { db in
+                try db.execute(
+                    sql: "UPDATE backupVersion SET status = ? WHERE id = ?",
+                    arguments: [status.rawValue, versionID]
+                )
+            }
+        } catch {
+            logger.error("executeJob: updateVersionStatus failed — \(error.localizedDescription, privacy: .public)")
+            throw error
         }
     }
 }

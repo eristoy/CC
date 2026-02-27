@@ -80,7 +80,7 @@ Each task was committed atomically:
 1. **Task 1: Implement NotificationService and SchedulerTask** - `8198246` (feat)
 2. **Task 2: Implement LoginItemManager** - `c799a46` (feat)
 
-**Plan metadata:** (pending — docs commit follows)
+**Plan metadata:** `78e7589` (docs: complete plan)
 
 ## Files Created/Modified
 - `AbletonBackup/NotificationService.swift` - Static UNUserNotificationCenter wrapper; requestAuthorization() checks .notDetermined before requesting; sendBackupSuccess/sendBackupFailure post with nil trigger (immediate delivery)

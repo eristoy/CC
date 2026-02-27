@@ -52,7 +52,7 @@ Plans:
   5. User can click "Back Up Now" in the menu to trigger an immediate backup
   6. A macOS notification appears on backup completion and on backup failure with error detail
   7. App can be configured to launch at login and does so reliably
-**Plans**: 5 plans
+**Plans**: 7 plans
 
 Plans:
 - [ ] 02-01-PLAN.md — Xcode project scaffold via xcodegen: app target, Info.plist (LSUIElement), BackupCoordinator skeleton
@@ -60,6 +60,8 @@ Plans:
 - [ ] 02-03-PLAN.md — NotificationService, SchedulerTask (Task loop), and LoginItemManager (SMAppService)
 - [ ] 02-04-PLAN.md — Wire all components: complete BackupCoordinator + MenuBarView with status, triggers, and login item toggle
 - [ ] 02-05-PLAN.md — Human verification checkpoint: all Phase 2 success criteria confirmed end-to-end
+- [ ] 02-06-PLAN.md — GAP: Add os.log structured logging to BackupEngine and all app-layer components
+- [ ] 02-07-PLAN.md — GAP: Fix notification authorization + foreground delivery delegate; surface guard failures as error states
 
 ### Phase 3: Settings + History
 **Goal**: All app behavior is configurable via a settings window and users can inspect past backup versions
@@ -114,7 +116,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Backup Engine | 5/5 | Complete | 2026-02-26 |
-| 2. App Shell + Triggers | 0/5 | Planned | - |
+| 2. App Shell + Triggers | 4/7 | In Progress (gap closure) | - |
 | 3. Settings + History | 0/TBD | Not started | - |
 | 4. Network Destinations | 0/TBD | Not started | - |
 | 5. ALS Parser | 0/TBD | Not started | - |

@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		03FFFC4FA9FFCAC55EF26EF4 /* BackupEngine in Frameworks */ = {isa = PBXBuildFile; productRef = CCD75FA3B1CFCAA7AB84B9FF /* BackupEngine */; };
+		2E14F2A9CC3A58FF7539D245 /* SchedulerTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = A98A6301B23816142DABA6E8 /* SchedulerTask.swift */; };
+		884E7F9C4621EFFB233EDC1D /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2846AF3A323A48FCCE4DA2A3 /* NotificationService.swift */; };
+		8E608E29D0C743D9F4A7360D /* FSEventsWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7970E3B43265061A90AAEAD7 /* FSEventsWatcher.swift */; };
 		92B0E16F17FA3A59A3DCC219 /* BackupCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BDFB08951CDD375D9C7C599 /* BackupCoordinator.swift */; };
 		DC8C62238A61A19355263867 /* AbletonBackupApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2622B775BC5EF9FACCABBF9A /* AbletonBackupApp.swift */; };
 		EE6A7CB28763162021275DAE /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA21EBE28DC3259149100E72 /* MenuBarView.swift */; };
@@ -15,10 +18,13 @@
 
 /* Begin PBXFileReference section */
 		2622B775BC5EF9FACCABBF9A /* AbletonBackupApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbletonBackupApp.swift; sourceTree = "<group>"; };
+		2846AF3A323A48FCCE4DA2A3 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		66BAD9AD6D5905369985CCF0 /* CC */ = {isa = PBXFileReference; lastKnownFileType = folder; name = CC; path = .; sourceTree = SOURCE_ROOT; };
+		7970E3B43265061A90AAEAD7 /* FSEventsWatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FSEventsWatcher.swift; sourceTree = "<group>"; };
 		7BDFB08951CDD375D9C7C599 /* BackupCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupCoordinator.swift; sourceTree = "<group>"; };
 		8A9964B7E7463A6A3706DC6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		926A0489CCD78BE5B2AC16F6 /* AbletonBackup.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AbletonBackup.entitlements; sourceTree = "<group>"; };
+		A98A6301B23816142DABA6E8 /* SchedulerTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulerTask.swift; sourceTree = "<group>"; };
 		E097E23D50AE0BB3256F3DE4 /* AbletonBackup.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AbletonBackup.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA21EBE28DC3259149100E72 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -65,7 +71,10 @@
 				926A0489CCD78BE5B2AC16F6 /* AbletonBackup.entitlements */,
 				2622B775BC5EF9FACCABBF9A /* AbletonBackupApp.swift */,
 				7BDFB08951CDD375D9C7C599 /* BackupCoordinator.swift */,
+				7970E3B43265061A90AAEAD7 /* FSEventsWatcher.swift */,
 				8A9964B7E7463A6A3706DC6E /* Info.plist */,
+				2846AF3A323A48FCCE4DA2A3 /* NotificationService.swift */,
+				A98A6301B23816142DABA6E8 /* SchedulerTask.swift */,
 				CE15BB6F5EBA8D227080255D /* Views */,
 			);
 			path = AbletonBackup;
@@ -146,7 +155,10 @@
 			files = (
 				DC8C62238A61A19355263867 /* AbletonBackupApp.swift in Sources */,
 				92B0E16F17FA3A59A3DCC219 /* BackupCoordinator.swift in Sources */,
+				8E608E29D0C743D9F4A7360D /* FSEventsWatcher.swift in Sources */,
 				EE6A7CB28763162021275DAE /* MenuBarView.swift in Sources */,
+				884E7F9C4621EFFB233EDC1D /* NotificationService.swift in Sources */,
+				2E14F2A9CC3A58FF7539D245 /* SchedulerTask.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

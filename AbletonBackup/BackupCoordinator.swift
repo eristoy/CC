@@ -159,6 +159,14 @@ final class BackupCoordinator {
         let folder = AbletonPrefsReader.discoverProjectsFolder()
         self.watchedProjectsFolder = folder
 
+        if folder == nil {
+            // Not a fatal error — the app still runs, manual trigger still works if setup completes.
+            // But surface it as an error so the menu bar icon reflects the configuration gap.
+            logger.warning("setup: Ableton Projects folder not found — manual trigger will fail; configure in Phase 3 settings")
+            status = .error("Ableton Projects folder not found. Configure in Settings.")
+            // Do NOT return — scheduler still starts; user can fix in Phase 3
+        }
+
         // 7. Start FSEvents watcher (TRIG-01)
         if let folder {
             startWatching(folder: folder)
@@ -197,11 +205,20 @@ final class BackupCoordinator {
     func runBackup(trigger: BackupTrigger) async {
         logger.info("runBackup: start — trigger=\(String(describing: trigger), privacy: .public)")
         guard case .idle = status else {
-            logger.warning("runBackup: guard — already running, ignoring trigger")
+            logger.warning("runBackup: guard — already running, ignoring \(String(describing: trigger), privacy: .public) trigger")
             return
         }
         guard let engine, let db, let watchedProjectsFolder else {
-            logger.error("runBackup: guard — not configured (engine=\(self.engine != nil), db=\(self.db != nil), folder=\(self.watchedProjectsFolder?.path ?? "nil", privacy: .public))")
+            let reason: String
+            if engine == nil {
+                reason = "Backup engine not initialized — setup may still be in progress"
+            } else if db == nil {
+                reason = "Database not ready — setup may still be in progress"
+            } else {
+                reason = "No watched folder configured — check that ~/Documents/Ableton/Ableton Projects exists"
+            }
+            logger.error("runBackup: guard — not configured: \(reason, privacy: .public)")
+            status = .error(reason)
             return
         }
 

@@ -2,6 +2,9 @@
 
 import Foundation
 import CoreServices
+import OSLog
+
+private let fsLogger = Logger(subsystem: "com.abletonbackup", category: "FSEvents")
 
 /// Wraps FSEventStreamRef to watch a directory tree for .als file changes.
 ///
@@ -59,6 +62,7 @@ final class FSEventsWatcher {
                 // Ableton uses atomic rename: check BOTH flags.
                 // Filter to .als only — ignores .asd, temp files, audio, logs.
                 if (isModified || isRenamed) && isFile && path.hasSuffix(".als") {
+                    watcher.log(path: path)
                     watcher.callback(path)
                 }
             }
@@ -77,7 +81,14 @@ final class FSEventsWatcher {
         if let stream {
             FSEventStreamScheduleWithRunLoop(stream, CFRunLoopGetMain(), CFRunLoopMode.defaultMode.rawValue)
             FSEventStreamStart(stream)
+            fsLogger.info("FSEventsWatcher: started watching \(url.path, privacy: .public)")
         }
+    }
+
+    /// Log an .als change event detected by the FSEvents callback.
+    /// Called from the C callback via the unretained watcher reference.
+    func log(path: String) {
+        fsLogger.info("FSEventsWatcher: .als change detected — \(path, privacy: .public)")
     }
 
     deinit {
@@ -88,5 +99,6 @@ final class FSEventsWatcher {
         }
         // Balance the passRetained in init
         Unmanaged.passUnretained(self).release()
+        fsLogger.info("FSEventsWatcher: stopped")
     }
 }

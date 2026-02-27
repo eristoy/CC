@@ -1,6 +1,9 @@
 // AbletonBackup/NotificationService.swift
 
 import UserNotifications
+import OSLog
+
+private let notifLogger = Logger(subsystem: "com.abletonbackup", category: "Notifications")
 
 /// Wraps UNUserNotificationCenter for backup success/failure notifications.
 ///
@@ -18,12 +21,15 @@ struct NotificationService {
     /// Nonisolated: UNUserNotificationCenter uses its own internal queue.
     static func requestAuthorization() {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
-            guard settings.authorizationStatus == .notDetermined else { return }
+            notifLogger.info("requestAuthorization: current status=\(settings.authorizationStatus.rawValue)")
+            guard settings.authorizationStatus == .notDetermined else {
+                notifLogger.info("requestAuthorization: skipping request — status already determined")
+                return
+            }
             UNUserNotificationCenter.current().requestAuthorization(
                 options: [.alert, .sound]
-            ) { _, _ in
-                // Granted status persists in system preferences.
-                // If denied, the user must re-enable in System Settings > Notifications.
+            ) { granted, error in
+                notifLogger.info("requestAuthorization: result granted=\(granted) error=\(error?.localizedDescription ?? "nil", privacy: .public)")
             }
         }
     }
@@ -33,6 +39,7 @@ struct NotificationService {
     /// Post a "Backup Complete" notification for the given project.
     /// - Parameter projectName: The display name of the backed-up project.
     static func sendBackupSuccess(projectName: String) {
+        notifLogger.info("sendBackupSuccess: posting — project=\(projectName, privacy: .public)")
         let content = UNMutableNotificationContent()
         content.title = "Backup Complete"
         content.body = "\(projectName) backed up successfully."
@@ -47,6 +54,7 @@ struct NotificationService {
     ///   - projectName: The display name of the project that failed.
     ///   - error: The error message shown in the notification body.
     static func sendBackupFailure(projectName: String, error: String) {
+        notifLogger.info("sendBackupFailure: posting — project=\(projectName, privacy: .public)")
         let content = UNMutableNotificationContent()
         content.title = "Backup Failed"
         content.body = "\(projectName): \(error)"
@@ -63,8 +71,7 @@ struct NotificationService {
             trigger: nil  // nil = deliver immediately
         )
         UNUserNotificationCenter.current().add(request) { error in
-            // Silently ignore delivery errors — notification is best-effort
-            _ = error
+            notifLogger.info("post: delivered identifier=\(identifier, privacy: .public) error=\(error?.localizedDescription ?? "nil", privacy: .public)")
         }
     }
 }

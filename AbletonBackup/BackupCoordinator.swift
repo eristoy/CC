@@ -1,5 +1,6 @@
 import Foundation
 import BackupEngine
+import OSLog
 
 // MARK: - BackupStatus
 
@@ -49,6 +50,8 @@ final class BackupCoordinator {
     /// SF Symbol name for the current status (used in MenuBarExtra label).
     var statusIcon: String { status.iconName }
 
+    private let logger = Logger(subsystem: "com.abletonbackup", category: "Coordinator")
+
     // MARK: - Login item (APP-03)
 
     let loginItemManager = LoginItemManager()
@@ -76,8 +79,10 @@ final class BackupCoordinator {
     // MARK: - Setup
 
     private func setup() async {
+        logger.info("setup: start")
         // 1. Request notification permission (NOTIF-01, NOTIF-02)
         NotificationService.requestAuthorization()
+        logger.info("setup: notification auth requested")
 
         // 2. Resolve Application Support directory
         let appSupport: URL
@@ -93,6 +98,7 @@ final class BackupCoordinator {
                 withIntermediateDirectories: true
             )
         } catch {
+            logger.error("setup: failed — \(error.localizedDescription, privacy: .public)")
             status = .error("Could not access Application Support: \(error.localizedDescription)")
             return
         }
@@ -103,7 +109,9 @@ final class BackupCoordinator {
             let dbPath = appSupport.appendingPathComponent("abletonbackup.db").path
             database = try AppDatabase.makeShared(at: dbPath)
             self.db = database
+            logger.info("setup: database opened at \(dbPath, privacy: .public)")
         } catch {
+            logger.error("setup: failed — \(error.localizedDescription, privacy: .public)")
             status = .error("Database setup failed: \(error.localizedDescription)")
             return
         }
@@ -117,6 +125,7 @@ final class BackupCoordinator {
                 withIntermediateDirectories: true
             )
         } catch {
+            logger.error("setup: failed — \(error.localizedDescription, privacy: .public)")
             status = .error("Could not create backup directory: \(error.localizedDescription)")
             return
         }
@@ -136,6 +145,7 @@ final class BackupCoordinator {
                 try dest.save(db)
             }
         } catch {
+            logger.error("setup: failed — \(error.localizedDescription, privacy: .public)")
             status = .error("Could not save destination config: \(error.localizedDescription)")
             return
         }
@@ -159,6 +169,7 @@ final class BackupCoordinator {
         scheduler.start(interval: SchedulerTask.defaultInterval) { [weak self] in
             await self?.runBackup(trigger: .scheduled)
         }
+        logger.info("setup: complete — watchedFolder=\(folder?.path ?? "nil", privacy: .public)")
     }
 
     // MARK: - FSEvents (TRIG-01)
@@ -185,8 +196,15 @@ final class BackupCoordinator {
     /// Run a backup. Guards against concurrent runs via status check.
     /// BackupEngine.runJob() handles per-project deduplication internally.
     func runBackup(trigger: BackupTrigger) async {
-        guard case .idle = status else { return }
-        guard let engine, let db, let watchedProjectsFolder else { return }
+        logger.info("runBackup: start — trigger=\(String(describing: trigger), privacy: .public)")
+        guard case .idle = status else {
+            logger.warning("runBackup: guard — already running, ignoring trigger")
+            return
+        }
+        guard let engine, let db, let watchedProjectsFolder else {
+            logger.error("runBackup: guard — not configured (engine=\(self.engine != nil), db=\(self.db != nil), folder=\(self.watchedProjectsFolder?.path ?? "nil", privacy: .public))")
+            return
+        }
 
         status = .running
         let projectName = watchedProjectsFolder.lastPathComponent
@@ -209,9 +227,11 @@ final class BackupCoordinator {
 
             status = .idle
             lastBackupAt = Date()
+            logger.info("runBackup: success — \(projectName, privacy: .public)")
             NotificationService.sendBackupSuccess(projectName: projectName)  // NOTIF-01
         } catch {
             let msg = error.localizedDescription
+            logger.error("runBackup: failed — \(msg, privacy: .public)")
             status = .error(msg)
             NotificationService.sendBackupFailure(projectName: projectName, error: msg)  // NOTIF-02
         }

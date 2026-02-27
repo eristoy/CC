@@ -1,6 +1,9 @@
 // AbletonBackup/SchedulerTask.swift
 
 import Foundation
+import OSLog
+
+private let schedLogger = Logger(subsystem: "com.abletonbackup", category: "Scheduler")
 
 /// Runs a repeating action at the specified interval using Swift Concurrency.
 ///
@@ -34,14 +37,17 @@ final class SchedulerTask {
                     break
                 }
                 guard !Task.isCancelled else { break }
+                schedLogger.info("SchedulerTask: firing scheduled backup")
                 await action()
                 _ = self  // keep self alive during action
             }
         }
+        schedLogger.info("SchedulerTask: started — interval=\(interval)")
     }
 
     /// Stop the scheduler.
     func stop() {
+        schedLogger.info("SchedulerTask: stopped")
         task?.cancel()
         task = nil
     }

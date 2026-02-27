@@ -9,15 +9,15 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Project Discovery
 
-- [ ] **DISC-01**: App auto-detects Ableton's configured Projects folder from Ableton preferences file
+- [x] **DISC-01**: App auto-detects Ableton's configured Projects folder from Ableton preferences file
 - [ ] **DISC-02**: User can add additional watch folders manually via settings
 - [ ] **DISC-03**: User can remove watch folders from settings
 
 ### Triggers
 
-- [ ] **TRIG-01**: App detects when an Ableton project is saved and triggers backup automatically
-- [ ] **TRIG-02**: App runs backups on a user-configured schedule (interval-based)
-- [ ] **TRIG-03**: User can trigger a manual backup from the menu bar
+- [x] **TRIG-01**: App detects when an Ableton project is saved and triggers backup automatically
+- [x] **TRIG-02**: App runs backups on a user-configured schedule (interval-based)
+- [x] **TRIG-03**: User can trigger a manual backup from the menu bar
 
 ### ALS Parser
 
@@ -46,13 +46,13 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [ ] **APP-01**: App runs as a menu bar utility (no Dock icon)
 - [ ] **APP-02**: Menu bar icon reflects current status (idle / running / error)
-- [ ] **APP-03**: App can be configured to launch at login
+- [x] **APP-03**: App can be configured to launch at login
 - [ ] **APP-04**: Settings window covers all configuration (destinations, schedule, retention, watch folders)
 
 ### Notifications
 
-- [ ] **NOTIF-01**: App sends macOS notification on backup completion
-- [ ] **NOTIF-02**: App sends macOS notification on backup failure with error detail
+- [x] **NOTIF-01**: App sends macOS notification on backup completion
+- [x] **NOTIF-02**: App sends macOS notification on backup failure with error detail
 
 ### Version History
 
@@ -100,13 +100,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DEST-01 | Phase 1 | Complete |
 | APP-01 | Phase 2 | Pending |
 | APP-02 | Phase 2 | Pending |
-| APP-03 | Phase 2 | Pending |
-| DISC-01 | Phase 2 | Pending |
-| TRIG-01 | Phase 2 | Pending |
-| TRIG-02 | Phase 2 | Pending |
-| TRIG-03 | Phase 2 | Pending |
-| NOTIF-01 | Phase 2 | Pending |
-| NOTIF-02 | Phase 2 | Pending |
+| APP-03 | Phase 2 | Complete |
+| DISC-01 | Phase 2 | Complete |
+| TRIG-01 | Phase 2 | Complete |
+| TRIG-02 | Phase 2 | Complete |
+| TRIG-03 | Phase 2 | Complete |
+| NOTIF-01 | Phase 2 | Complete |
+| NOTIF-02 | Phase 2 | Complete |
 | APP-04 | Phase 3 | Pending |
 | DISC-02 | Phase 3 | Pending |
 | DISC-03 | Phase 3 | Pending |

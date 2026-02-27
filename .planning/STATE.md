@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-02-27T13:56:16.059Z"
+last_updated: "2026-02-27T19:07:34.591Z"
 progress:
-  total_phases: 1
+  total_phases: 2
   completed_phases: 1
-  total_plans: 5
-  completed_plans: 5
+  total_plans: 10
+  completed_plans: 8
 ---
 
 # Project State
@@ -22,12 +22,12 @@ See: .planning/PROJECT.md (updated 2026-02-25)
 
 ## Current Position
 
-Phase: 1 of 6 (Backup Engine) — COMPLETE
-Plan: 5 of 5 in current phase — COMPLETE
-Status: Phase 1 complete — ready for Phase 2
-Last activity: 2026-02-26 — Completed plan 01-05 (BackupEngine actor + 6 integration tests; all Phase 1 ROADMAP success criteria verified; GRDB date-precision incremental skip bug fixed)
+Phase: 2 of 6 (App Shell + Triggers) — In Progress
+Plan: 3 of 5 in current phase (02-03 complete)
+Status: Phase 2 — Plans 02-01, 02-02, 02-03 complete; 02-04 and 02-05 remaining
+Last activity: 2026-02-27 — Completed plan 02-03 (NotificationService, SchedulerTask, LoginItemManager; all compile under Swift 6 strict concurrency)
 
-Progress: [█████░░░░░] 20% (5 of 25 total plans estimated)
+Progress: [████████░░] 32% (8 of 25 total plans estimated)
 
 ## Performance Metrics
 
@@ -47,6 +47,8 @@ Progress: [█████░░░░░] 20% (5 of 25 total plans estimated)
 - Trend: Plan 01-05 was significantly longer due to debugging GRDB date-precision bug in incremental skip logic
 
 *Updated after each plan completion*
+| Phase 02 P02 | 1 | 2 tasks | 2 files |
+| Phase 02-app-shell-triggers P02-03 | 2 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -75,6 +77,12 @@ Recent decisions affecting current work:
 - **[01-05]** FileEntry cache over BackupFileRecord cache: GRDB truncates Date to milliseconds; filesystem mtime has nanosecond precision — comparing DB-fetched mtime to current filesystem mtime causes all files to appear "changed" on second backup. Fix: actor-local FileEntry cache bypasses DB round-trip.
 - **[01-05]** WAL write-barrier: pool.write (not pool.read) for step 7 allRecords fetch ensures just-inserted records are visible — WAL snapshot isolation on pool.read can miss writes from same async context.
 - **[01-05]** Full checksum verification (re-read all destination files) chosen over spot-check — correctness over speed for Phase 1; Phase 3 can add deep-verify toggle if needed.
+- [Phase 02-02]: Both kFSEventStreamEventFlagItemModified and kFSEventStreamEventFlagItemRenamed checked — Ableton uses atomic rename so isModified alone would miss saves
+- [Phase 02-02]: discoverProjectsFolder() checks ~/Documents/Ableton/Ableton Projects first (confirmed Ableton 12.2 default), then falls back to Library.cfg XMLDocument XPath parse
+- [Phase 02-02]: FSEventsWatcher schedules on CFRunLoopGetMain() with no @MainActor dependency — BackupCoordinator (02-04) wraps callback in Task { @MainActor in ... }
+- [Phase 02-03]: NotificationService.requestAuthorization() checks .notDetermined before requesting — avoids re-requesting if already granted or denied
+- [Phase 02-03]: SchedulerTask is @MainActor-isolated to store Task<Void, Never> without Sendable constraint; BackgroundTasks framework rejected (requires sandbox/App Store)
+- [Phase 02-03]: LoginItemManager.isEnabled reads SMAppService.mainApp.status live on every access — UserDefaults caching would desync with System Settings independent changes
 
 ### Pending Todos
 
@@ -91,6 +99,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-26
-Stopped at: Completed 01-05-PLAN.md — BackupEngine actor + 6 integration tests (41 total tests pass); Phase 1 complete; ready for Phase 2 (FSEvents watcher + app shell)
+Last session: 2026-02-27
+Stopped at: Completed 02-03-PLAN.md — NotificationService, SchedulerTask, LoginItemManager; all compile under Swift 6 strict concurrency; requirements TRIG-02, TRIG-03, APP-03, NOTIF-01, NOTIF-02 complete
 Resume file: None

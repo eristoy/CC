@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-02-27T19:07:34.591Z"
+last_updated: "2026-02-27T19:13:06.850Z"
 progress:
   total_phases: 2
   completed_phases: 1
   total_plans: 10
-  completed_plans: 8
+  completed_plans: 9
 ---
 
 # Project State
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-02-25)
 ## Current Position
 
 Phase: 2 of 6 (App Shell + Triggers) — In Progress
-Plan: 3 of 5 in current phase (02-03 complete)
-Status: Phase 2 — Plans 02-01, 02-02, 02-03 complete; 02-04 and 02-05 remaining
-Last activity: 2026-02-27 — Completed plan 02-03 (NotificationService, SchedulerTask, LoginItemManager; all compile under Swift 6 strict concurrency)
+Plan: 4 of 5 in current phase (02-04 complete)
+Status: Phase 2 — Plans 02-01, 02-02, 02-03, 02-04 complete; 02-05 remaining
+Last activity: 2026-02-27 — Completed plan 02-04 (BackupCoordinator wires all components; MenuBarView complete; BUILD SUCCEEDED Swift 6)
 
-Progress: [████████░░] 32% (8 of 25 total plans estimated)
+Progress: [████████░░] 36% (9 of 25 total plans estimated)
 
 ## Performance Metrics
 
@@ -49,6 +49,7 @@ Progress: [████████░░] 32% (8 of 25 total plans estimated)
 *Updated after each plan completion*
 | Phase 02 P02 | 1 | 2 tasks | 2 files |
 | Phase 02-app-shell-triggers P02-03 | 2 | 2 tasks | 4 files |
+| Phase 02-app-shell-triggers P02-04 | 2 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -83,6 +84,9 @@ Recent decisions affecting current work:
 - [Phase 02-03]: NotificationService.requestAuthorization() checks .notDetermined before requesting — avoids re-requesting if already granted or denied
 - [Phase 02-03]: SchedulerTask is @MainActor-isolated to store Task<Void, Never> without Sendable constraint; BackgroundTasks framework rejected (requires sandbox/App Store)
 - [Phase 02-03]: LoginItemManager.isEnabled reads SMAppService.mainApp.status live on every access — UserDefaults caching would desync with System Settings independent changes
+- [Phase 02-04]: BackupEngine.adapters is private — LocalDestinationAdapter initialized at BackupEngine init time, not added later (addAdapter extension not viable)
+- [Phase 02-04]: Project uses path: String, DestinationConfig uses name, rootPath, type: DestinationType enum, createdAt: Date — actual Phase 1 schema differs from plan interface spec
+- [Phase 02-04]: BackupStatus/BackupTrigger/BackupCoordinator made internal (not public) — app target, LoginItemManager is internal
 
 ### Pending Todos
 
@@ -100,5 +104,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-27
-Stopped at: Completed 02-03-PLAN.md — NotificationService, SchedulerTask, LoginItemManager; all compile under Swift 6 strict concurrency; requirements TRIG-02, TRIG-03, APP-03, NOTIF-01, NOTIF-02 complete
+Stopped at: Completed 02-04-PLAN.md — BackupCoordinator wires BackupEngine + FSEventsWatcher + SchedulerTask + NotificationService; MenuBarView complete with status/backup/login-item UI; BUILD SUCCEEDED under Swift 6 strict concurrency; requirements APP-02, TRIG-01, TRIG-02, TRIG-03, DISC-01, NOTIF-01, NOTIF-02, APP-03 complete
 Resume file: None

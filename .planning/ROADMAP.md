@@ -116,7 +116,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Backup Engine | 5/5 | Complete | 2026-02-26 |
-| 2. App Shell + Triggers | 4/7 | In Progress (gap closure) | - |
+| 2. App Shell + Triggers | 5/7 | In Progress|  |
 | 3. Settings + History | 0/TBD | Not started | - |
 | 4. Network Destinations | 0/TBD | Not started | - |
 | 5. ALS Parser | 0/TBD | Not started | - |

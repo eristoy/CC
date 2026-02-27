@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-02-27T19:13:06.850Z"
+last_updated: "2026-02-27T20:01:45.697Z"
 progress:
   total_phases: 2
   completed_phases: 1
-  total_plans: 10
-  completed_plans: 9
+  total_plans: 12
+  completed_plans: 10
 ---
 
 # Project State
@@ -23,9 +23,9 @@ See: .planning/PROJECT.md (updated 2026-02-25)
 ## Current Position
 
 Phase: 2 of 6 (App Shell + Triggers) — In Progress
-Plan: 4 of 5 in current phase (02-04 complete)
-Status: Phase 2 — Plans 02-01, 02-02, 02-03, 02-04 complete; 02-05 remaining
-Last activity: 2026-02-27 — Completed plan 02-04 (BackupCoordinator wires all components; MenuBarView complete; BUILD SUCCEEDED Swift 6)
+Plan: 6 of 6 in current phase (02-06 complete)
+Status: Phase 2 — Plans 02-01, 02-02, 02-03, 02-04, 02-05, 02-06 complete
+Last activity: 2026-02-27 — Completed plan 02-06 (os.log structured logging added to all 5 backup lifecycle components; BUILD SUCCEEDED Swift 6)
 
 Progress: [████████░░] 36% (9 of 25 total plans estimated)
 
@@ -50,6 +50,7 @@ Progress: [████████░░] 36% (9 of 25 total plans estimated)
 | Phase 02 P02 | 1 | 2 tasks | 2 files |
 | Phase 02-app-shell-triggers P02-03 | 2 | 2 tasks | 4 files |
 | Phase 02-app-shell-triggers P02-04 | 2 | 2 tasks | 3 files |
+| Phase 02-app-shell-triggers P06 | 8 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -87,6 +88,8 @@ Recent decisions affecting current work:
 - [Phase 02-04]: BackupEngine.adapters is private — LocalDestinationAdapter initialized at BackupEngine init time, not added later (addAdapter extension not viable)
 - [Phase 02-04]: Project uses path: String, DestinationConfig uses name, rootPath, type: DestinationType enum, createdAt: Date — actual Phase 1 schema differs from plan interface spec
 - [Phase 02-04]: BackupStatus/BackupTrigger/BackupCoordinator made internal (not public) — app target, LoginItemManager is internal
+- [Phase 02-06]: Logger declared as actor property for BackupEngine and class property for BackupCoordinator; file-scope private let for static-method struct (NotificationService) and top-level classes — Logger is Sendable so any isolation domain works
+- [Phase 02-06]: FSEventsWatcher.log(path:) nonisolated method bridges C callback context to fsLogger, avoiding actor-isolation issues from C callback
 
 ### Pending Todos
 
@@ -104,5 +107,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-27
-Stopped at: Completed 02-04-PLAN.md — BackupCoordinator wires BackupEngine + FSEventsWatcher + SchedulerTask + NotificationService; MenuBarView complete with status/backup/login-item UI; BUILD SUCCEEDED under Swift 6 strict concurrency; requirements APP-02, TRIG-01, TRIG-02, TRIG-03, DISC-01, NOTIF-01, NOTIF-02, APP-03 complete
+Stopped at: Completed 02-06-PLAN.md — os.log structured logging added to all 5 backup lifecycle components (BackupEngine, BackupCoordinator, NotificationService, FSEventsWatcher, SchedulerTask); Console.app filter subsystem:com.abletonbackup shows full backup lifecycle trace; BUILD SUCCEEDED under Swift 6 strict concurrency; requirements APP-02, NOTIF-01, NOTIF-02 complete
 Resume file: None

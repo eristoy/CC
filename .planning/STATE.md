@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-02-27T20:01:45.697Z"
+last_updated: "2026-02-27T20:05:00.000Z"
 progress:
   total_phases: 2
   completed_phases: 1
-  total_plans: 12
-  completed_plans: 10
+  total_plans: 13
+  completed_plans: 11
 ---
 
 # Project State
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-02-25)
 ## Current Position
 
 Phase: 2 of 6 (App Shell + Triggers) — In Progress
-Plan: 6 of 6 in current phase (02-06 complete)
-Status: Phase 2 — Plans 02-01, 02-02, 02-03, 02-04, 02-05, 02-06 complete
-Last activity: 2026-02-27 — Completed plan 02-06 (os.log structured logging added to all 5 backup lifecycle components; BUILD SUCCEEDED Swift 6)
+Plan: 7 of 7 in current phase (02-07 complete)
+Status: Phase 2 — Plans 02-01, 02-02, 02-03, 02-04, 02-05, 02-06, 02-07 complete
+Last activity: 2026-02-27 — Completed plan 02-07 (NotificationDelegate for foreground banner delivery; BackupCoordinator guard failures surface as error states; BUILD SUCCEEDED Swift 6)
 
-Progress: [████████░░] 36% (9 of 25 total plans estimated)
+Progress: [████████░░] 40% (10 of 25 total plans estimated)
 
 ## Performance Metrics
 
@@ -51,6 +51,7 @@ Progress: [████████░░] 36% (9 of 25 total plans estimated)
 | Phase 02-app-shell-triggers P02-03 | 2 | 2 tasks | 4 files |
 | Phase 02-app-shell-triggers P02-04 | 2 | 2 tasks | 3 files |
 | Phase 02-app-shell-triggers P06 | 8 | 2 tasks | 5 files |
+| Phase 02-app-shell-triggers P07 | 2 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -90,6 +91,9 @@ Recent decisions affecting current work:
 - [Phase 02-04]: BackupStatus/BackupTrigger/BackupCoordinator made internal (not public) — app target, LoginItemManager is internal
 - [Phase 02-06]: Logger declared as actor property for BackupEngine and class property for BackupCoordinator; file-scope private let for static-method struct (NotificationService) and top-level classes — Logger is Sendable so any isolation domain works
 - [Phase 02-06]: FSEventsWatcher.log(path:) nonisolated method bridges C callback context to fsLogger, avoiding actor-isolation issues from C callback
+- **[02-07]** NotificationDelegate uses @unchecked Sendable — singleton with no mutable state, safe from any isolation domain under Swift 6
+- **[02-07]** .task modifier attached to MenuBarView (not MenuBarExtra Scene) — Scene does not expose .task; view-level .task fires on first appearance which is equivalent to app launch for menu bar apps
+- **[02-07]** nil watchedProjectsFolder sets error state but does NOT return from setup() — scheduler and manual trigger still start so user can resolve in Phase 3 settings
 
 ### Pending Todos
 
@@ -107,5 +111,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-27
-Stopped at: Completed 02-06-PLAN.md — os.log structured logging added to all 5 backup lifecycle components (BackupEngine, BackupCoordinator, NotificationService, FSEventsWatcher, SchedulerTask); Console.app filter subsystem:com.abletonbackup shows full backup lifecycle trace; BUILD SUCCEEDED under Swift 6 strict concurrency; requirements APP-02, NOTIF-01, NOTIF-02 complete
+Stopped at: Completed 02-07-PLAN.md — NotificationDelegate singleton wired for foreground banner delivery; BackupCoordinator guard failures surface as descriptive error states; nil watchedProjectsFolder shown as error state in menu bar icon; BUILD SUCCEEDED under Swift 6 strict concurrency; requirements NOTIF-01, NOTIF-02, APP-02 complete
 Resume file: None

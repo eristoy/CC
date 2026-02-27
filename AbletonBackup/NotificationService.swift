@@ -10,27 +10,21 @@ private let notifLogger = Logger(subsystem: "com.abletonbackup", category: "Noti
 /// No sandbox entitlements required — distributing outside Mac App Store.
 /// NSUserNotificationAlertStyle = alert in Info.plist ensures persistent banners.
 ///
-/// Call requestAuthorization() once at app launch (AbletonBackupApp.init or .task modifier).
-/// Do NOT re-request if already denied — check status first.
+/// Call setup() once at app launch (AbletonBackupApp .task modifier).
+/// setup() sets the delegate (required for foreground delivery) and requests authorization.
 struct NotificationService {
 
-    // MARK: - Authorization
+    // MARK: - Setup (call once at app launch)
 
-    /// Request notification permission at first launch.
-    /// Safe to call repeatedly — checks current status before requesting.
-    /// Nonisolated: UNUserNotificationCenter uses its own internal queue.
-    static func requestAuthorization() {
-        UNUserNotificationCenter.current().getNotificationSettings { settings in
-            notifLogger.info("requestAuthorization: current status=\(settings.authorizationStatus.rawValue)")
-            guard settings.authorizationStatus == .notDetermined else {
-                notifLogger.info("requestAuthorization: skipping request — status already determined")
-                return
-            }
-            UNUserNotificationCenter.current().requestAuthorization(
-                options: [.alert, .sound]
-            ) { granted, error in
-                notifLogger.info("requestAuthorization: result granted=\(granted) error=\(error?.localizedDescription ?? "nil", privacy: .public)")
-            }
+    /// Sets the UNUserNotificationCenter delegate and requests authorization.
+    /// Must be called at app launch before any notification is posted.
+    /// Without a delegate, foreground notifications are silently suppressed.
+    static func setup() {
+        UNUserNotificationCenter.current().delegate = NotificationDelegate.shared
+        UNUserNotificationCenter.current().requestAuthorization(
+            options: [.alert, .sound]
+        ) { granted, error in
+            notifLogger.info("requestAuthorization: granted=\(granted) error=\(error?.localizedDescription ?? "nil", privacy: .public)")
         }
     }
 
@@ -73,5 +67,24 @@ struct NotificationService {
         UNUserNotificationCenter.current().add(request) { error in
             notifLogger.info("post: delivered identifier=\(identifier, privacy: .public) error=\(error?.localizedDescription ?? "nil", privacy: .public)")
         }
+    }
+}
+
+// MARK: - NotificationDelegate
+
+/// Ensures notifications display as banners while the app is in the foreground.
+/// Menu bar apps are always in the foreground — without this delegate,
+/// UNUserNotificationCenter silently drops all notifications.
+final class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate, @unchecked Sendable {
+    static let shared = NotificationDelegate()
+    private override init() {}
+
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification,
+        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+    ) {
+        // Show banner + play sound even when app is in foreground
+        completionHandler([.banner, .sound])
     }
 }

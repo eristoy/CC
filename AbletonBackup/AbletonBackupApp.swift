@@ -8,6 +8,11 @@ struct AbletonBackupApp: App {
         MenuBarExtra {
             MenuBarView()
                 .environment(coordinator)
+                .task {
+                    // Set notification delegate + request authorization at app launch.
+                    // Must happen before BackupCoordinator.setup() posts any notifications.
+                    NotificationService.setup()
+                }
         } label: {
             // Dynamic icon driven by BackupCoordinator.status (@Observable)
             Label("AbletonBackup", systemImage: coordinator.statusIcon)

@@ -80,9 +80,8 @@ final class BackupCoordinator {
 
     private func setup() async {
         logger.info("setup: start")
-        // 1. Request notification permission (NOTIF-01, NOTIF-02)
-        NotificationService.requestAuthorization()
-        logger.info("setup: notification auth requested")
+        // 1. Notification auth handled at app entry (AbletonBackupApp .task modifier calls NotificationService.setup())
+        logger.info("setup: notification auth handled at app entry")
 
         // 2. Resolve Application Support directory
         let appSupport: URL

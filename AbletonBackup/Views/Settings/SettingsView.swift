@@ -15,7 +15,7 @@ struct SettingsView: View {
                 .tabItem { Label("Destinations", systemImage: "externaldrive") }
                 .tag(2)
 
-            Text("History")                 // Replaced in Plan 04
+            HistoryView()
                 .tabItem { Label("History", systemImage: "clock.arrow.circlepath") }
                 .tag(3)
 

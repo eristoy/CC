@@ -73,7 +73,14 @@ Plans:
   3. User can remove a watch folder and it is no longer monitored
   4. User can view a list of past backup versions for any project, with timestamp for each version
   5. Version history shows which destinations each version exists on
-**Plans**: TBD
+**Plans**: 5 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — WatchFolder GRDB model + v2 migration; BackupCoordinator multi-watcher refactor with DB-backed watch folder list
+- [ ] 03-02-PLAN.md — Settings scene, MenuBarView settings button, SettingsView TabView, GeneralSettingsView, AboutView
+- [ ] 03-03-PLAN.md — WatchFoldersSettingsView (NSOpenPanel + confirmationDialog) and DestinationsSettingsView (read-only)
+- [ ] 03-04-PLAN.md — HistoryView (NavigationSplitView, BackupEvent grouping, ValueObservation, corrupt warnings)
+- [ ] 03-05-PLAN.md — Human verification checkpoint: all Phase 3 success criteria confirmed end-to-end
 
 ### Phase 4: Network Destinations
 **Goal**: Users can back up to a NAS (with Keychain credentials) and iCloud Drive, with live destination status and reliable sleep/wake behavior
@@ -117,7 +124,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 |-------|----------------|--------|-----------|
 | 1. Backup Engine | 5/5 | Complete | 2026-02-26 |
 | 2. App Shell + Triggers | 6/7 | In Progress|  |
-| 3. Settings + History | 0/TBD | Not started | - |
+| 3. Settings + History | 0/5 | Not started | - |
 | 4. Network Destinations | 0/TBD | Not started | - |
 | 5. ALS Parser | 0/TBD | Not started | - |
 | 6. GitHub Destination | 0/TBD | Not started | - |

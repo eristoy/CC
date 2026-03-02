@@ -71,5 +71,16 @@ public enum Schema {
                 t.column("lockedSince", .datetime).notNull()
             }
         }
+
+        migrator.registerMigration("v2_watch_folders") { db in
+            // watchFolder — directories monitored for Ableton .als file changes
+            try db.create(table: "watchFolder") { t in
+                t.primaryKey("id", .text)
+                t.column("path", .text).notNull().unique()
+                t.column("name", .text).notNull()
+                t.column("addedAt", .datetime).notNull()
+                t.column("lastTriggeredAt", .datetime)
+            }
+        }
     }
 }

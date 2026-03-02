@@ -16,6 +16,7 @@
 		884E7F9C4621EFFB233EDC1D /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2846AF3A323A48FCCE4DA2A3 /* NotificationService.swift */; };
 		8E608E29D0C743D9F4A7360D /* FSEventsWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7970E3B43265061A90AAEAD7 /* FSEventsWatcher.swift */; };
 		92B0E16F17FA3A59A3DCC219 /* BackupCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BDFB08951CDD375D9C7C599 /* BackupCoordinator.swift */; };
+		B3769D28CD2528549AFB4362 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E74348B590F0599BAD78541F /* HistoryView.swift */; };
 		BF375D65F1CEE1D9A3149F28 /* WatchFoldersSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D91859B870870C236A2FF15F /* WatchFoldersSettingsView.swift */; };
 		C7C8AC98E92AD05D83C1A8C2 /* DestinationsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815DB28677259757B035CCD1 /* DestinationsSettingsView.swift */; };
 		DC8C62238A61A19355263867 /* AbletonBackupApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2622B775BC5EF9FACCABBF9A /* AbletonBackupApp.swift */; };
@@ -39,6 +40,7 @@
 		D91859B870870C236A2FF15F /* WatchFoldersSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchFoldersSettingsView.swift; sourceTree = "<group>"; };
 		DFEBAFBDC92A908BEAFF7A8E /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		E097E23D50AE0BB3256F3DE4 /* AbletonBackup.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AbletonBackup.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E74348B590F0599BAD78541F /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 		ED13D0CAB95479AA9B34EF22 /* GeneralSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsView.swift; sourceTree = "<group>"; };
 		FA21EBE28DC3259149100E72 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -61,6 +63,7 @@
 				464199FF160D335536B0A2A0 /* AboutView.swift */,
 				815DB28677259757B035CCD1 /* DestinationsSettingsView.swift */,
 				ED13D0CAB95479AA9B34EF22 /* GeneralSettingsView.swift */,
+				E74348B590F0599BAD78541F /* HistoryView.swift */,
 				DFEBAFBDC92A908BEAFF7A8E /* SettingsView.swift */,
 				D91859B870870C236A2FF15F /* WatchFoldersSettingsView.swift */,
 			);
@@ -189,6 +192,7 @@
 				C7C8AC98E92AD05D83C1A8C2 /* DestinationsSettingsView.swift in Sources */,
 				8E608E29D0C743D9F4A7360D /* FSEventsWatcher.swift in Sources */,
 				09FB6D6F991939AE98FE4BFF /* GeneralSettingsView.swift in Sources */,
+				B3769D28CD2528549AFB4362 /* HistoryView.swift in Sources */,
 				64E43BEF8CF0A668B0FE0C43 /* LoginItemManager.swift in Sources */,
 				EE6A7CB28763162021275DAE /* MenuBarView.swift in Sources */,
 				884E7F9C4621EFFB233EDC1D /* NotificationService.swift in Sources */,

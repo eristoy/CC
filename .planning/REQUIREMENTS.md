@@ -56,8 +56,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Version History
 
-- [ ] **HIST-01**: User can view version history per project in the settings window
-- [ ] **HIST-02**: Version history shows timestamp and which destinations each version exists on
+- [x] **HIST-01**: User can view version history per project in the settings window
+- [x] **HIST-02**: Version history shows timestamp and which destinations each version exists on
 
 ## v2 Requirements
 
@@ -110,8 +110,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | APP-04 | Phase 3 | Complete |
 | DISC-02 | Phase 3 | Complete |
 | DISC-03 | Phase 3 | Complete |
-| HIST-01 | Phase 3 | Pending |
-| HIST-02 | Phase 3 | Pending |
+| HIST-01 | Phase 3 | Complete |
+| HIST-02 | Phase 3 | Complete |
 | DEST-02 | Phase 4 | Pending |
 | DEST-03 | Phase 4 | Pending |
 | DEST-04 | Phase 4 | Pending |

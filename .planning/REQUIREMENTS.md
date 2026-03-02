@@ -10,8 +10,8 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Project Discovery
 
 - [x] **DISC-01**: App auto-detects Ableton's configured Projects folder from Ableton preferences file
-- [ ] **DISC-02**: User can add additional watch folders manually via settings
-- [ ] **DISC-03**: User can remove watch folders from settings
+- [x] **DISC-02**: User can add additional watch folders manually via settings
+- [x] **DISC-03**: User can remove watch folders from settings
 
 ### Triggers
 
@@ -108,8 +108,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | NOTIF-01 | Phase 2 | Complete |
 | NOTIF-02 | Phase 2 | Complete |
 | APP-04 | Phase 3 | Pending |
-| DISC-02 | Phase 3 | Pending |
-| DISC-03 | Phase 3 | Pending |
+| DISC-02 | Phase 3 | Complete |
+| DISC-03 | Phase 3 | Complete |
 | HIST-01 | Phase 3 | Pending |
 | HIST-02 | Phase 3 | Pending |
 | DEST-02 | Phase 4 | Pending |

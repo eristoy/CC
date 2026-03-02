@@ -22,12 +22,12 @@ See: .planning/PROJECT.md (updated 2026-02-25)
 
 ## Current Position
 
-Phase: 2 of 6 (App Shell + Triggers) — In Progress
-Plan: 7 of 7 in current phase (02-07 complete)
-Status: Phase 2 — Plans 02-01, 02-02, 02-03, 02-04, 02-05, 02-06, 02-07 complete
-Last activity: 2026-02-27 — Completed plan 02-07 (NotificationDelegate for foreground banner delivery; BackupCoordinator guard failures surface as error states; BUILD SUCCEEDED Swift 6)
+Phase: 3 of 6 (Settings + History) — In Progress
+Plan: 1 of 5 in current phase (03-01 complete)
+Status: Phase 3 — Plan 03-01 complete
+Last activity: 2026-03-02 — Completed plan 03-01 (WatchFolder GRDB model + v2 migration; BackupCoordinator refactored to multi-watcher DB-backed model; watchFolders observable state + add/remove methods; BUILD SUCCEEDED Swift 6)
 
-Progress: [████████░░] 40% (10 of 25 total plans estimated)
+Progress: [████████░░] 44% (11 of 25 total plans estimated)
 
 ## Performance Metrics
 
@@ -52,6 +52,7 @@ Progress: [████████░░] 40% (10 of 25 total plans estimated)
 | Phase 02-app-shell-triggers P02-04 | 2 | 2 tasks | 3 files |
 | Phase 02-app-shell-triggers P06 | 8 | 2 tasks | 5 files |
 | Phase 02-app-shell-triggers P07 | 2 | 2 tasks | 3 files |
+| Phase 03-settings-history P01 | 3 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -94,6 +95,11 @@ Recent decisions affecting current work:
 - **[02-07]** NotificationDelegate uses @unchecked Sendable — singleton with no mutable state, safe from any isolation domain under Swift 6
 - **[02-07]** .task modifier attached to MenuBarView (not MenuBarExtra Scene) — Scene does not expose .task; view-level .task fires on first appearance which is equivalent to app launch for menu bar apps
 - **[02-07]** nil watchedProjectsFolder sets error state but does NOT return from setup() — scheduler and manual trigger still start so user can resolve in Phase 3 settings
+- **[03-01]** WatchFolder GRDB model uses TEXT primary key (UUID string), UNIQUE path constraint — consistent with existing Phase 1 model pattern
+- **[03-01]** Bootstrap seeding non-fatal: if AbletonPrefsReader returns nil on first launch, setup() continues with error state — scheduler still starts, user configures in Settings
+- **[03-01]** startWatcher(for:) has idempotency guard (watchers[url.path] == nil) — safe to call from both bootstrap and addWatchFolder without duplicate watchers
+- **[03-01]** removeWatchFolder stops FSEventsWatcher BEFORE DB delete — prevents stray events during removal window
+- **[03-01]** bootstrapProjectID/bootstrapDestID retained — multi-destination job dispatch is Phase 4+, Phase 3 adds multi-watcher infrastructure only
 
 ### Pending Todos
 
@@ -110,6 +116,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-27
-Stopped at: Completed 02-07-PLAN.md — NotificationDelegate singleton wired for foreground banner delivery; BackupCoordinator guard failures surface as descriptive error states; nil watchedProjectsFolder shown as error state in menu bar icon; BUILD SUCCEEDED under Swift 6 strict concurrency; requirements NOTIF-01, NOTIF-02, APP-02 complete
+Last session: 2026-03-02
+Stopped at: Completed 03-01-PLAN.md — WatchFolder GRDB model + v2_watch_folders migration; BackupCoordinator refactored to multi-watcher [String: FSEventsWatcher] with watchFolders observable state, addWatchFolder/removeWatchFolder, DB bootstrap from AbletonPrefsReader; BUILD SUCCEEDED Swift 6; requirements DISC-02, DISC-03 complete
 Resume file: None

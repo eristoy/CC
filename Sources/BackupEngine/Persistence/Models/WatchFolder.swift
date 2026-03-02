@@ -7,7 +7,7 @@ import Foundation
 /// - `TableRecord`: maps to "watchFolder" SQLite table
 /// - `FetchableRecord`: read rows from DB
 /// - `PersistableRecord`: insert/update/delete rows in DB
-public struct WatchFolder: Codable, Sendable, Identifiable {
+public struct WatchFolder: Codable, Sendable, Identifiable, Hashable {
     /// UUID string primary key.
     public var id: String
     /// Absolute filesystem path. UNIQUE — enforced by DB constraint.

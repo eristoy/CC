@@ -256,6 +256,10 @@ final class BackupCoordinator {
         // FSEventsWatcher already filters to .als — double-check for safety
         guard path.hasSuffix(".als") else { return }
 
+        // Respect auto-backup toggle (APP-04): if the user has disabled auto-backup, skip FSEvent triggers
+        guard UserDefaults.standard.object(forKey: "autoBackupEnabled") == nil
+              || UserDefaults.standard.bool(forKey: "autoBackupEnabled") else { return }
+
         // Update lastTriggeredAt for the matching WatchFolder
         let watchedPath = (path as NSString).deletingLastPathComponent
         if let idx = watchFolders.firstIndex(where: { path.hasPrefix($0.path) || watchedPath == $0.path }) {

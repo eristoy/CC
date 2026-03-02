@@ -124,7 +124,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 |-------|----------------|--------|-----------|
 | 1. Backup Engine | 5/5 | Complete | 2026-02-26 |
 | 2. App Shell + Triggers | 6/7 | In Progress|  |
-| 3. Settings + History | 2/5 | In Progress|  |
+| 3. Settings + History | 3/5 | In Progress|  |
 | 4. Network Destinations | 0/TBD | Not started | - |
 | 5. ALS Parser | 0/TBD | Not started | - |
 | 6. GitHub Destination | 0/TBD | Not started | - |

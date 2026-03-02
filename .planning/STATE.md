@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-02T21:14:01.905Z"
+last_updated: "2026-03-02T21:16:00.000Z"
 progress:
   total_phases: 3
   completed_phases: 1
   total_plans: 17
-  completed_plans: 13
+  completed_plans: 14
 ---
 
 # Project State
@@ -23,9 +23,9 @@ See: .planning/PROJECT.md (updated 2026-02-25)
 ## Current Position
 
 Phase: 3 of 6 (Settings + History) — In Progress
-Plan: 2 of 5 in current phase (03-02 complete)
-Status: Phase 3 — Plan 03-02 complete
-Last activity: 2026-03-02 — Completed plan 03-02 (Settings scene + TabView scaffold; GeneralSettingsView with AppStorage auto-backup + GRDB retention + login item; AboutView; NSApp.sendAction Settings button; BUILD SUCCEEDED Swift 6)
+Plan: 3 of 5 in current phase (03-03 complete)
+Status: Phase 3 — Plan 03-03 complete
+Last activity: 2026-03-02 — Completed plan 03-03 (WatchFoldersSettingsView with NSOpenPanel + confirmationDialog; DestinationsSettingsView read-only GRDB list; SettingsView stubs replaced; BUILD SUCCEEDED Swift 6)
 
 Progress: [████████░░] 44% (11 of 25 total plans estimated)
 
@@ -54,6 +54,7 @@ Progress: [████████░░] 44% (11 of 25 total plans estimated)
 | Phase 02-app-shell-triggers P07 | 2 | 2 tasks | 3 files |
 | Phase 03-settings-history P01 | 3 | 2 tasks | 3 files |
 | Phase 03-settings-history P02 | 3 | 2 tasks | 7 files |
+| Phase 03-settings-history P03 | 7 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -104,6 +105,9 @@ Recent decisions affecting current work:
 - [Phase 03-02]: NSApp.sendAction Selector(showSettingsWindow:) used for Settings button — SettingsLink silently fails in LSUIElement apps
 - [Phase 03-02]: AppStorage(autoBackupEnabled) + UserDefaults.standard.object(forKey:)==nil guard in BackupCoordinator preserves default-true when key absent
 - [Phase 03-02]: WatchFolder conforms to Hashable — required for List(selection:) binding in WatchFoldersSettingsView
+- **[03-03]** selectedFolderID: String? used instead of WatchFolder? for List selection — avoids Hashable assumption, works with any model type
+- **[03-03]** DestinationsSettingsView is read-only in Phase 3 — loads DestinationConfig rows from GRDB on appear, no add/remove controls (Phase 4+)
+- **[03-03]** xcodegen regeneration required after each new Swift file — project.yml sources glob does not auto-update xcodeproj
 
 ### Pending Todos
 
@@ -121,5 +125,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-02
-Stopped at: Completed 03-02-PLAN.md — Settings scene + 5-tab TabView; GeneralSettingsView (AppStorage auto-backup, GRDB retention stepper, login item); AboutView; NSApp.sendAction Settings button in MenuBarView; WatchFolder Hashable conformance; BUILD SUCCEEDED Swift 6; requirements APP-04 complete
+Stopped at: Completed 03-03-PLAN.md — WatchFoldersSettingsView with NSOpenPanel + confirmationDialog; DestinationsSettingsView read-only GRDB list; SettingsView stubs replaced with real views; BUILD SUCCEEDED Swift 6; requirements DISC-02, DISC-03, APP-04 complete
 Resume file: None

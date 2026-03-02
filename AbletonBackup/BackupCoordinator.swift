@@ -1,5 +1,6 @@
 import Foundation
 import BackupEngine
+import GRDB
 import OSLog
 
 // MARK: - BackupStatus
@@ -35,6 +36,12 @@ enum BackupTrigger: Sendable {
 /// @Observable + @MainActor: all mutable state is isolated to the main actor so
 /// SwiftUI MenuBarExtra views update correctly. Background work is dispatched
 /// via Task and hops back to MainActor to update status.
+///
+/// Multi-watcher model (Phase 3+):
+/// - `watchFolders` is the DB-backed list of monitored directories (observable)
+/// - `watchers` is the live dictionary of FSEventsWatcher instances keyed by path
+/// - `addWatchFolder(url:)` inserts a DB row and starts a new watcher
+/// - `removeWatchFolder(_:)` stops the watcher and removes the DB row
 @Observable
 @MainActor
 final class BackupCoordinator {
@@ -50,6 +57,12 @@ final class BackupCoordinator {
     /// SF Symbol name for the current status (used in MenuBarExtra label).
     var statusIcon: String { status.iconName }
 
+    /// DB-backed list of watched folders. Drives WatchFolders pane UI.
+    var watchFolders: [WatchFolder] = []
+
+    /// Exposes the database pool for Settings/History GRDB ValueObservation.
+    var database: AppDatabase? { db }
+
     private let logger = Logger(subsystem: "com.abletonbackup", category: "Coordinator")
 
     // MARK: - Login item (APP-03)
@@ -60,12 +73,12 @@ final class BackupCoordinator {
 
     private var engine: BackupEngine?
     private var db: AppDatabase?
-    private var watchedProjectsFolder: URL?
-    private var watcher: FSEventsWatcher?
+    private var watchers: [String: FSEventsWatcher] = [:]
     private let scheduler = SchedulerTask()
 
-    // Phase 2 bootstrap destination ID — constant for upsert idempotency
+    // Phase 2/3 bootstrap destination ID — constant for upsert idempotency across launches
     private let bootstrapDestID = "bootstrap-local"
+    // Single-project ID used in runBackup bootstrap logic
     private let bootstrapProjectID = "bootstrap-project"
 
     // MARK: - Init
@@ -150,42 +163,89 @@ final class BackupCoordinator {
         }
 
         // 5. Initialize BackupEngine with the bootstrap adapter.
-        //    BackupEngine.adapters is private — initialize once with correct adapters.
-        //    Phase 3 reinitializes with settings-configured adapters.
         let adapter = LocalDestinationAdapter(config: dest)
         self.engine = BackupEngine(db: database, adapters: [adapter])
 
-        // 6. Discover Ableton Projects folder (DISC-01)
-        let folder = AbletonPrefsReader.discoverProjectsFolder()
-        self.watchedProjectsFolder = folder
-
-        if folder == nil {
-            // Not a fatal error — the app still runs, manual trigger still works if setup completes.
-            // But surface it as an error so the menu bar icon reflects the configuration gap.
-            logger.warning("setup: Ableton Projects folder not found — manual trigger will fail; configure in Phase 3 settings")
-            status = .error("Ableton Projects folder not found. Configure in Settings.")
-            // Do NOT return — scheduler still starts; user can fix in Phase 3
+        // 6. Bootstrap watch folders: if watchFolder table is empty, seed from AbletonPrefsReader.
+        //    On subsequent launches the DB already has rows — skip discovery.
+        do {
+            let count = try await database.pool.read { db in
+                try WatchFolder.fetchCount(db)
+            }
+            if count == 0, let discovered = AbletonPrefsReader.discoverProjectsFolder() {
+                let folder = WatchFolder(path: discovered.path, name: discovered.lastPathComponent)
+                try await database.pool.write { db in try folder.save(db) }
+                logger.info("setup: bootstrapped watch folder — \(discovered.path, privacy: .public)")
+            } else if count == 0 {
+                // Not a fatal error — scheduler and manual trigger still start.
+                // User can configure in Phase 3 settings.
+                logger.warning("setup: Ableton Projects folder not found — configure in Settings")
+                status = .error("Ableton Projects folder not found. Configure in Settings.")
+                // Do NOT return — scheduler still starts
+            }
+        } catch {
+            logger.warning("setup: watch folder bootstrap failed — \(error.localizedDescription, privacy: .public)")
+            // Non-fatal: continue without pre-seeded folder
         }
 
-        // 7. Start FSEvents watcher (TRIG-01)
-        if let folder {
-            startWatching(folder: folder)
+        // 7. Load all watch folders from DB and start watchers
+        do {
+            let folders = try await database.pool.read { db in
+                try WatchFolder.order(Column("addedAt").asc).fetchAll(db)
+            }
+            self.watchFolders = folders
+            for f in folders {
+                startWatcher(for: URL(fileURLWithPath: f.path))
+            }
+            logger.info("setup: loaded \(folders.count) watch folder(s)")
+        } catch {
+            logger.error("setup: failed to load watch folders — \(error.localizedDescription, privacy: .public)")
+            // Non-fatal: watchers simply won't start, user can reconfigure
         }
 
         // 8. Start scheduled backup loop (TRIG-02)
         scheduler.start(interval: SchedulerTask.defaultInterval) { [weak self] in
             await self?.runBackup(trigger: .scheduled)
         }
-        logger.info("setup: complete — watchedFolder=\(folder?.path ?? "nil", privacy: .public)")
+        logger.info("setup: complete — \(self.watchFolders.count) folder(s) watched")
+    }
+
+    // MARK: - Watch Folder Management
+
+    /// Add a new folder to the watch list. Inserts a DB row and starts a new FSEventsWatcher.
+    /// Does not rebuild existing watchers.
+    func addWatchFolder(url: URL) async {
+        guard let db else { return }
+        let folder = WatchFolder(path: url.path, name: url.lastPathComponent)
+        do {
+            try await db.pool.write { database in try folder.save(database) }
+            watchFolders.append(folder)
+            startWatcher(for: url)
+            logger.info("addWatchFolder: added \(url.path, privacy: .public)")
+        } catch {
+            logger.error("addWatchFolder failed: \(error.localizedDescription, privacy: .public)")
+        }
+    }
+
+    /// Remove a folder from the watch list. Stops the watcher and removes its DB row.
+    func removeWatchFolder(_ folder: WatchFolder) async {
+        guard let db else { return }
+        // Stop watcher first — prevents new events from firing during DB delete
+        watchers.removeValue(forKey: folder.path)
+        do {
+            try await db.pool.write { database in try WatchFolder.deleteOne(database, key: folder.id) }
+            watchFolders.removeAll { $0.id == folder.id }
+            logger.info("removeWatchFolder: removed \(folder.path, privacy: .public)")
+        } catch {
+            logger.error("removeWatchFolder failed: \(error.localizedDescription, privacy: .public)")
+        }
     }
 
     // MARK: - FSEvents (TRIG-01)
 
-    private func startWatching(folder: URL) {
-        // Outer closure is nonisolated (required by FSEventsWatcher API).
-        // Inner Task hops explicitly to @MainActor for coordinator state access.
-        // Swift 6: valid — the Task closure declares @MainActor isolation explicitly.
-        watcher = FSEventsWatcher(url: folder) { [weak self] path in
+    private func startWatcher(for url: URL) {
+        guard watchers[url.path] == nil else { return }  // already watching
+        watchers[url.path] = FSEventsWatcher(url: url) { [weak self] path in
             Task { @MainActor [weak self] in
                 await self?.handleALSChange(at: path)
             }
@@ -195,6 +255,22 @@ final class BackupCoordinator {
     private func handleALSChange(at path: String) async {
         // FSEventsWatcher already filters to .als — double-check for safety
         guard path.hasSuffix(".als") else { return }
+
+        // Update lastTriggeredAt for the matching WatchFolder
+        let watchedPath = (path as NSString).deletingLastPathComponent
+        if let idx = watchFolders.firstIndex(where: { path.hasPrefix($0.path) || watchedPath == $0.path }) {
+            watchFolders[idx].lastTriggeredAt = Date()
+            // Persist the timestamp update
+            if let db, let updatedFolder = watchFolders[safe: idx] {
+                let folderToUpdate = updatedFolder
+                do {
+                    try await db.pool.write { database in try folderToUpdate.save(database) }
+                } catch {
+                    logger.warning("handleALSChange: failed to update lastTriggeredAt — \(error.localizedDescription, privacy: .public)")
+                }
+            }
+        }
+
         await runBackup(trigger: .fsEvent)
     }
 
@@ -208,24 +284,30 @@ final class BackupCoordinator {
             logger.warning("runBackup: guard — already running, ignoring \(String(describing: trigger), privacy: .public) trigger")
             return
         }
-        guard let engine, let db, let watchedProjectsFolder else {
+        guard let engine, let db else {
             let reason: String
             if engine == nil {
                 reason = "Backup engine not initialized — setup may still be in progress"
-            } else if db == nil {
-                reason = "Database not ready — setup may still be in progress"
             } else {
-                reason = "No watched folder configured — check that ~/Documents/Ableton/Ableton Projects exists"
+                reason = "Database not ready — setup may still be in progress"
             }
             logger.error("runBackup: guard — not configured: \(reason, privacy: .public)")
             status = .error(reason)
             return
         }
+        guard !watchers.isEmpty, let firstFolder = watchFolders.first else {
+            let reason = "No watched folder configured — add a folder in Settings"
+            logger.error("runBackup: guard — \(reason, privacy: .public)")
+            status = .error(reason)
+            return
+        }
 
         status = .running
+        let watchedProjectsFolder = URL(fileURLWithPath: firstFolder.path)
         let projectName = watchedProjectsFolder.lastPathComponent
 
-        // Phase 2 bootstrap: upsert the single watched project into DB
+        // Phase 2/3 bootstrap: upsert the first watch folder as the single watched project
+        // Phase 4+ multi-destination work will replace this with per-folder job dispatch
         let project = Project(
             id: bootstrapProjectID,
             name: projectName,
@@ -251,6 +333,15 @@ final class BackupCoordinator {
             status = .error(msg)
             NotificationService.sendBackupFailure(projectName: projectName, error: msg)  // NOTIF-02
         }
+    }
+}
+
+// MARK: - Array safe subscript
+
+private extension Array {
+    subscript(safe index: Int) -> Element? {
+        guard index >= 0, index < count else { return nil }
+        return self[index]
     }
 }
 

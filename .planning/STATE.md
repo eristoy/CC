@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-02T18:32:35.387Z"
+last_updated: "2026-03-02T21:14:01.905Z"
 progress:
-  total_phases: 2
+  total_phases: 3
   completed_phases: 1
-  total_plans: 12
-  completed_plans: 11
+  total_plans: 17
+  completed_plans: 13
 ---
 
 # Project State
@@ -23,9 +23,9 @@ See: .planning/PROJECT.md (updated 2026-02-25)
 ## Current Position
 
 Phase: 3 of 6 (Settings + History) — In Progress
-Plan: 1 of 5 in current phase (03-01 complete)
-Status: Phase 3 — Plan 03-01 complete
-Last activity: 2026-03-02 — Completed plan 03-01 (WatchFolder GRDB model + v2 migration; BackupCoordinator refactored to multi-watcher DB-backed model; watchFolders observable state + add/remove methods; BUILD SUCCEEDED Swift 6)
+Plan: 2 of 5 in current phase (03-02 complete)
+Status: Phase 3 — Plan 03-02 complete
+Last activity: 2026-03-02 — Completed plan 03-02 (Settings scene + TabView scaffold; GeneralSettingsView with AppStorage auto-backup + GRDB retention + login item; AboutView; NSApp.sendAction Settings button; BUILD SUCCEEDED Swift 6)
 
 Progress: [████████░░] 44% (11 of 25 total plans estimated)
 
@@ -53,6 +53,7 @@ Progress: [████████░░] 44% (11 of 25 total plans estimated)
 | Phase 02-app-shell-triggers P06 | 8 | 2 tasks | 5 files |
 | Phase 02-app-shell-triggers P07 | 2 | 2 tasks | 3 files |
 | Phase 03-settings-history P01 | 3 | 2 tasks | 3 files |
+| Phase 03-settings-history P02 | 3 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -100,6 +101,9 @@ Recent decisions affecting current work:
 - **[03-01]** startWatcher(for:) has idempotency guard (watchers[url.path] == nil) — safe to call from both bootstrap and addWatchFolder without duplicate watchers
 - **[03-01]** removeWatchFolder stops FSEventsWatcher BEFORE DB delete — prevents stray events during removal window
 - **[03-01]** bootstrapProjectID/bootstrapDestID retained — multi-destination job dispatch is Phase 4+, Phase 3 adds multi-watcher infrastructure only
+- [Phase 03-02]: NSApp.sendAction Selector(showSettingsWindow:) used for Settings button — SettingsLink silently fails in LSUIElement apps
+- [Phase 03-02]: AppStorage(autoBackupEnabled) + UserDefaults.standard.object(forKey:)==nil guard in BackupCoordinator preserves default-true when key absent
+- [Phase 03-02]: WatchFolder conforms to Hashable — required for List(selection:) binding in WatchFoldersSettingsView
 
 ### Pending Todos
 
@@ -117,5 +121,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-02
-Stopped at: Completed 03-01-PLAN.md — WatchFolder GRDB model + v2_watch_folders migration; BackupCoordinator refactored to multi-watcher [String: FSEventsWatcher] with watchFolders observable state, addWatchFolder/removeWatchFolder, DB bootstrap from AbletonPrefsReader; BUILD SUCCEEDED Swift 6; requirements DISC-02, DISC-03 complete
+Stopped at: Completed 03-02-PLAN.md — Settings scene + 5-tab TabView; GeneralSettingsView (AppStorage auto-backup, GRDB retention stepper, login item); AboutView; NSApp.sendAction Settings button in MenuBarView; WatchFolder Hashable conformance; BUILD SUCCEEDED Swift 6; requirements APP-04 complete
 Resume file: None

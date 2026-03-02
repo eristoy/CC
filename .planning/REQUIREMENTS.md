@@ -47,7 +47,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **APP-01**: App runs as a menu bar utility (no Dock icon)
 - [x] **APP-02**: Menu bar icon reflects current status (idle / running / error)
 - [x] **APP-03**: App can be configured to launch at login
-- [ ] **APP-04**: Settings window covers all configuration (destinations, schedule, retention, watch folders)
+- [x] **APP-04**: Settings window covers all configuration (destinations, schedule, retention, watch folders)
 
 ### Notifications
 
@@ -107,7 +107,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TRIG-03 | Phase 2 | Complete |
 | NOTIF-01 | Phase 2 | Complete |
 | NOTIF-02 | Phase 2 | Complete |
-| APP-04 | Phase 3 | Pending |
+| APP-04 | Phase 3 | Complete |
 | DISC-02 | Phase 3 | Complete |
 | DISC-03 | Phase 3 | Complete |
 | HIST-01 | Phase 3 | Pending |

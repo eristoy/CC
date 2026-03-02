@@ -17,6 +17,7 @@
 		8E608E29D0C743D9F4A7360D /* FSEventsWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7970E3B43265061A90AAEAD7 /* FSEventsWatcher.swift */; };
 		92B0E16F17FA3A59A3DCC219 /* BackupCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BDFB08951CDD375D9C7C599 /* BackupCoordinator.swift */; };
 		BF375D65F1CEE1D9A3149F28 /* WatchFoldersSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D91859B870870C236A2FF15F /* WatchFoldersSettingsView.swift */; };
+		C7C8AC98E92AD05D83C1A8C2 /* DestinationsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815DB28677259757B035CCD1 /* DestinationsSettingsView.swift */; };
 		DC8C62238A61A19355263867 /* AbletonBackupApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2622B775BC5EF9FACCABBF9A /* AbletonBackupApp.swift */; };
 		E5533C0A2DAEEC7C2F01974C /* AbletonPrefsReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5EC795B5DEFDDA49828DCE5 /* AbletonPrefsReader.swift */; };
 		EE6A7CB28763162021275DAE /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA21EBE28DC3259149100E72 /* MenuBarView.swift */; };
@@ -29,6 +30,7 @@
 		66BAD9AD6D5905369985CCF0 /* CC */ = {isa = PBXFileReference; lastKnownFileType = folder; name = CC; path = .; sourceTree = SOURCE_ROOT; };
 		7970E3B43265061A90AAEAD7 /* FSEventsWatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FSEventsWatcher.swift; sourceTree = "<group>"; };
 		7BDFB08951CDD375D9C7C599 /* BackupCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupCoordinator.swift; sourceTree = "<group>"; };
+		815DB28677259757B035CCD1 /* DestinationsSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationsSettingsView.swift; sourceTree = "<group>"; };
 		8A9964B7E7463A6A3706DC6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		926A0489CCD78BE5B2AC16F6 /* AbletonBackup.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AbletonBackup.entitlements; sourceTree = "<group>"; };
 		9BB0D67C3271CBD56788ED7B /* LoginItemManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginItemManager.swift; sourceTree = "<group>"; };
@@ -57,6 +59,7 @@
 			isa = PBXGroup;
 			children = (
 				464199FF160D335536B0A2A0 /* AboutView.swift */,
+				815DB28677259757B035CCD1 /* DestinationsSettingsView.swift */,
 				ED13D0CAB95479AA9B34EF22 /* GeneralSettingsView.swift */,
 				DFEBAFBDC92A908BEAFF7A8E /* SettingsView.swift */,
 				D91859B870870C236A2FF15F /* WatchFoldersSettingsView.swift */,
@@ -183,6 +186,7 @@
 				E5533C0A2DAEEC7C2F01974C /* AbletonPrefsReader.swift in Sources */,
 				744B5A47C875637C5D3EA071 /* AboutView.swift in Sources */,
 				92B0E16F17FA3A59A3DCC219 /* BackupCoordinator.swift in Sources */,
+				C7C8AC98E92AD05D83C1A8C2 /* DestinationsSettingsView.swift in Sources */,
 				8E608E29D0C743D9F4A7360D /* FSEventsWatcher.swift in Sources */,
 				09FB6D6F991939AE98FE4BFF /* GeneralSettingsView.swift in Sources */,
 				64E43BEF8CF0A668B0FE0C43 /* LoginItemManager.swift in Sources */,

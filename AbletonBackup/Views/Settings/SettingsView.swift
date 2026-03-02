@@ -11,7 +11,7 @@ struct SettingsView: View {
                 .tabItem { Label("Watch Folders", systemImage: "folder.badge.questionmark") }
                 .tag(1)
 
-            Text("Destinations")            // Replaced in Plan 03
+            DestinationsSettingsView()
                 .tabItem { Label("Destinations", systemImage: "externaldrive") }
                 .tag(2)
 

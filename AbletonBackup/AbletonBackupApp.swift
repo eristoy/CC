@@ -18,5 +18,10 @@ struct AbletonBackupApp: App {
             Label("AbletonBackup", systemImage: coordinator.statusIcon)
         }
         .menuBarExtraStyle(.menu)   // Standard dropdown menu (not floating window)
+
+        Settings {
+            SettingsView()
+                .environment(coordinator)
+        }
     }
 }

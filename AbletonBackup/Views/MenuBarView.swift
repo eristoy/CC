@@ -1,5 +1,6 @@
 import SwiftUI
 import ServiceManagement
+import AppKit
 
 /// The dropdown content for the AbletonBackup menu bar item.
 struct MenuBarView: View {
@@ -75,6 +76,17 @@ struct MenuBarView: View {
 
     private var settingsSection: some View {
         VStack(alignment: .leading, spacing: 0) {
+            // Settings window (APP-04)
+            Button("Settings…") {
+                NSApp.activate(ignoringOtherApps: true)
+                NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+            }
+            .keyboardShortcut(",")
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+
+            Divider()
+
             // Launch at Login toggle (APP-03)
             Toggle(isOn: loginItemBinding) {
                 Text("Launch at Login")

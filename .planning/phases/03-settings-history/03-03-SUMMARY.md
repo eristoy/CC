@@ -137,3 +137,12 @@ None — no external service configuration required.
 ---
 *Phase: 03-settings-history*
 *Completed: 2026-03-02*
+
+## Self-Check: PASSED
+
+- FOUND: AbletonBackup/Views/Settings/WatchFoldersSettingsView.swift
+- FOUND: AbletonBackup/Views/Settings/DestinationsSettingsView.swift
+- FOUND: .planning/phases/03-settings-history/03-03-SUMMARY.md
+- FOUND: commit 10c3a3d (Task 2: DestinationsSettingsView)
+- FOUND: commit fa6b17e (Task 1: WatchFoldersSettingsView, pre-committed in Plan 02)
+- BUILD SUCCEEDED (final verification)

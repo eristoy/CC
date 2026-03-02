@@ -105,6 +105,15 @@ None — no external service configuration required.
 - AbletonPrefsReader.discoverProjectsFolder() is ready to be called at app launch in AbletonBackupApp.swift
 - Both files are self-contained with no @MainActor dependencies — BackupCoordinator wiring (02-04) handles the actor boundary
 
+## Self-Check: PASSED
+
+- FOUND: AbletonBackup/FSEventsWatcher.swift
+- FOUND: AbletonBackup/AbletonPrefsReader.swift
+- FOUND: .planning/phases/02-app-shell-triggers/02-02-SUMMARY.md
+- FOUND: commit 9694433 (Task 1 — FSEventsWatcher)
+- FOUND: commit 4de0cc2 (Task 2 — AbletonPrefsReader)
+- FOUND: commit 9a6ff24 (docs — SUMMARY + state)
+
 ---
 *Phase: 02-app-shell-triggers*
 *Completed: 2026-02-27*

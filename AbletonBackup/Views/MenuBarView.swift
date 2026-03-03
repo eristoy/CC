@@ -5,6 +5,7 @@ import AppKit
 /// The dropdown content for the AbletonBackup menu bar item.
 struct MenuBarView: View {
     @Environment(BackupCoordinator.self) private var coordinator
+    @Environment(\.openSettings) private var openSettings
     @State private var loginItemError: String? = nil
 
     var body: some View {
@@ -78,10 +79,7 @@ struct MenuBarView: View {
         VStack(alignment: .leading, spacing: 0) {
             // Settings window (APP-04)
             Button("Settings…") {
-                DispatchQueue.main.async {
-                    NSApp.activate(ignoringOtherApps: true)
-                    NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
-                }
+                openSettings()
             }
             .keyboardShortcut(",")
             .padding(.horizontal, 12)

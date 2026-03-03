@@ -80,7 +80,7 @@ Plans:
 - [ ] 03-02-PLAN.md — Settings scene, MenuBarView settings button, SettingsView TabView, GeneralSettingsView, AboutView
 - [ ] 03-03-PLAN.md — WatchFoldersSettingsView (NSOpenPanel + confirmationDialog) and DestinationsSettingsView (read-only)
 - [ ] 03-04-PLAN.md — HistoryView (NavigationSplitView, BackupEvent grouping, ValueObservation, corrupt warnings)
-- [ ] 03-05-PLAN.md — Human verification checkpoint: all Phase 3 success criteria confirmed end-to-end
+- [x] 03-05-PLAN.md — Human verification checkpoint: all Phase 3 success criteria confirmed end-to-end (completed 2026-03-03)
 
 ### Phase 4: Network Destinations
 **Goal**: Users can back up to a NAS (with Keychain credentials) and iCloud Drive, with live destination status and reliable sleep/wake behavior
@@ -124,7 +124,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 |-------|----------------|--------|-----------|
 | 1. Backup Engine | 5/5 | Complete | 2026-02-26 |
 | 2. App Shell + Triggers | 6/7 | In Progress|  |
-| 3. Settings + History | 5/5 | Complete   | 2026-03-02 |
+| 3. Settings + History | 6/6 | Complete   | 2026-03-03 |
 | 4. Network Destinations | 0/TBD | Not started | - |
 | 5. ALS Parser | 0/TBD | Not started | - |
 | 6. GitHub Destination | 0/TBD | Not started | - |

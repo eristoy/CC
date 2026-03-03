@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-02T21:28:52.427Z"
+last_updated: "2026-03-03T15:12:30.084Z"
 progress:
   total_phases: 3
   completed_phases: 2
-  total_plans: 17
-  completed_plans: 16
+  total_plans: 18
+  completed_plans: 17
 ---
 
 # Project State
@@ -22,10 +22,10 @@ See: .planning/PROJECT.md (updated 2026-02-25)
 
 ## Current Position
 
-Phase: 3 of 6 (Settings + History) — COMPLETE
-Plan: 5 of 5 in current phase (03-05 complete — Phase 3 done)
-Status: Phase 3 COMPLETE — all five plans complete, human verification approved
-Last activity: 2026-03-02 — Completed plan 03-05 (human verification approved; all five Settings tabs confirmed working end-to-end; Phase 3 complete; requirements APP-04, DISC-02, DISC-03, HIST-01, HIST-02 verified)
+Phase: 3 of 6 (Settings + History) — COMPLETE (gap closure done)
+Plan: 6 of 6 in current phase (03-06 complete — Phase 3 gap closure done)
+Status: Phase 3 COMPLETE — all six plans complete (five main + one gap closure for APP-04)
+Last activity: 2026-03-03 — Completed plan 03-06 (APP-04 gap closed: schedule interval Picker added to GeneralSettingsView, BackupCoordinator reads UserDefaults on startup and exposes updateScheduleInterval(_:); BUILD SUCCEEDED)
 
 Progress: [██████████] 52% (13 of 25 total plans estimated)
 
@@ -57,6 +57,7 @@ Progress: [██████████] 52% (13 of 25 total plans estimated)
 | Phase 03-settings-history P03 | 7 | 2 tasks | 4 files |
 | Phase 03-settings-history P04 | 2 | 2 tasks | 2 files |
 | Phase 03-settings-history P05 | 5 | 2 tasks | 0 files |
+| Phase 03-settings-history P06 | 50 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -112,6 +113,8 @@ Recent decisions affecting current work:
 - **[03-03]** xcodegen regeneration required after each new Swift file — project.yml sources glob does not auto-update xcodeproj
 - [Phase 03-04]: selectedProjectID: String? used for List selection instead of Project? to avoid Hashable requirement — consistent with 03-03 selectedFolderID pattern
 - [Phase 03-05]: Human verification checkpoint passed — all Phase 3 features confirmed working by user without issues
+- [Phase 03-06]: scheduleIntervalSeconds stored as Int (seconds) in UserDefaults — @AppStorage in view, UserDefaults.standard.integer in coordinator, consistent with autoBackupEnabled pattern
+- [Phase 03-06]: updateScheduleInterval calls scheduler.start() directly — SchedulerTask.start() cancels existing task before starting new one, no explicit stop() needed
 
 ### Pending Todos
 
@@ -128,6 +131,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-02
-Stopped at: Completed 03-05-PLAN.md — Phase 3 human verification approved; all five Settings tabs confirmed working; requirements APP-04, DISC-02, DISC-03, HIST-01, HIST-02 complete; Phase 3 fully done
+Last session: 2026-03-03
+Stopped at: Completed 03-06-PLAN.md — APP-04 gap closed: schedule interval configurable (30 min/1 hr/2 hr/4 hr) via Picker in GeneralSettingsView; BackupCoordinator reads interval from UserDefaults on startup and restarts scheduler immediately on change; Phase 3 gap closure fully complete
 Resume file: None

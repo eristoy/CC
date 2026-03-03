@@ -4,6 +4,7 @@ import BackupEngine
 struct GeneralSettingsView: View {
     @Environment(BackupCoordinator.self) private var coordinator
     @AppStorage("autoBackupEnabled") private var autoBackupEnabled: Bool = true
+    @AppStorage("scheduleIntervalSeconds") private var scheduleIntervalSeconds: Int = 3600
     @State private var retentionCount: Int = 10
 
     var body: some View {
@@ -17,6 +18,17 @@ struct GeneralSettingsView: View {
                         saveRetentionCount(newValue)
                     }
                     .help("Number of backup versions to keep per project. Oldest versions are pruned on the next backup run.")
+                Picker("Backup schedule", selection: $scheduleIntervalSeconds) {
+                    Text("Every 30 minutes").tag(1800)
+                    Text("Every hour").tag(3600)
+                    Text("Every 2 hours").tag(7200)
+                    Text("Every 4 hours").tag(14400)
+                }
+                .pickerStyle(.menu)
+                .help("How often to run a scheduled backup, independent of file-save triggers")
+                .onChange(of: scheduleIntervalSeconds) { _, newValue in
+                    coordinator.updateScheduleInterval(newValue)
+                }
             }
 
             Section("Login") {

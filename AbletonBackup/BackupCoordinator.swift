@@ -204,10 +204,28 @@ final class BackupCoordinator {
         }
 
         // 8. Start scheduled backup loop (TRIG-02)
-        scheduler.start(interval: SchedulerTask.defaultInterval) { [weak self] in
+        let storedSeconds = UserDefaults.standard.integer(forKey: "scheduleIntervalSeconds")
+        let scheduleInterval: Duration = storedSeconds > 0
+            ? .seconds(storedSeconds)
+            : SchedulerTask.defaultInterval   // fallback to 3600s when key not yet written
+        scheduler.start(interval: scheduleInterval) { [weak self] in
             await self?.runBackup(trigger: .scheduled)
         }
+        logger.info("setup: scheduler started — interval=\(scheduleInterval)")
         logger.info("setup: complete — \(self.watchFolders.count) folder(s) watched")
+    }
+
+    // MARK: - Schedule Management (APP-04)
+
+    /// Restart the scheduler with a new interval. Called from GeneralSettingsView when
+    /// the user changes the schedule interval picker. The new interval is already
+    /// persisted to UserDefaults by @AppStorage before this is called.
+    func updateScheduleInterval(_ seconds: Int) {
+        let interval: Duration = seconds > 0 ? .seconds(seconds) : SchedulerTask.defaultInterval
+        logger.info("updateScheduleInterval: restarting scheduler — interval=\(interval)")
+        scheduler.start(interval: interval) { [weak self] in
+            await self?.runBackup(trigger: .scheduled)
+        }
     }
 
     // MARK: - Watch Folder Management

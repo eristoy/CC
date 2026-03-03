@@ -16,8 +16,8 @@ A Settings window covering all app configuration (destinations, schedule, retent
 ### Settings window structure
 - Use SwiftUI `Settings` scene — renders as native macOS tabbed inspector window
 - Five tabs: **General / Watch Folders / Destinations / History / About**
-- General pane contains: auto-backup toggle (save-triggered, no timer), version retention setting, Launch at Login toggle
-- Backup schedule is save-triggered only — no time-based scheduler in this phase
+- General pane contains: auto-backup toggle (save-triggered), version retention setting, schedule interval picker, Launch at Login toggle
+- Schedule interval is configurable (30 min / 1 hr / 2 hr / 4 hr) — Phase 2 shipped SchedulerTask at a hardcoded 1-hour interval; APP-04 requires the interval to be user-configurable. Original "save-triggered only, no timer" decision superseded by post-execution gap finding (03-VERIFICATION.md).
 
 ### Watch folder management
 - Watch Folders pane: list with **+/− buttons below** (macOS standard pattern)

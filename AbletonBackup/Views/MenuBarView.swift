@@ -78,8 +78,10 @@ struct MenuBarView: View {
         VStack(alignment: .leading, spacing: 0) {
             // Settings window (APP-04)
             Button("Settings…") {
-                NSApp.activate(ignoringOtherApps: true)
-                NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+                DispatchQueue.main.async {
+                    NSApp.activate(ignoringOtherApps: true)
+                    NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+                }
             }
             .keyboardShortcut(",")
             .padding(.horizontal, 12)

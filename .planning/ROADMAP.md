@@ -92,7 +92,17 @@ Plans:
   3. User can configure iCloud Drive as a destination; backups appear in iCloud Drive without any authentication step
   4. Each configured destination shows a live availability status (online / offline / error) in settings
   5. After system wakes from sleep, NAS destinations reconnect and a backup proceeds without manual intervention
-**Plans**: TBD
+**Plans**: 8 plans
+
+Plans:
+- [ ] 04-01-PLAN.md — GRDB v3 migration (SMB columns) and DestinationConfig model extension
+- [ ] 04-02-PLAN.md — KeychainCredentialStore (Security.framework) and NetFSMounter (async NetFS wrapper)
+- [ ] 04-03-PLAN.md — MountedVolumeAdapter, SMBDestinationAdapter, iCloudDestinationAdapter
+- [ ] 04-04-PLAN.md — DestinationManager actor: adapter lifecycle, 30s polling, sleep/wake reconnection
+- [ ] 04-05-PLAN.md — BackupCoordinator multi-destination wiring and DestinationManager environment injection
+- [ ] 04-06-PLAN.md — Destination setup sheets: AddDestinationView, SMBSetupView, MountedVolumeSetupView, iCloudSetupView
+- [ ] 04-07-PLAN.md — DestinationStatusDot component, DestinationsSettingsView CRUD, MenuBarView per-destination dots
+- [ ] 04-08-PLAN.md — Human verification checkpoint: all Phase 4 success criteria confirmed end-to-end
 
 ### Phase 5: ALS Parser
 **Goal**: Backups include all externally referenced samples, making every backup fully restorable regardless of where samples are stored on disk
@@ -125,6 +135,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 1. Backup Engine | 5/5 | Complete | 2026-02-26 |
 | 2. App Shell + Triggers | 6/7 | In Progress|  |
 | 3. Settings + History | 6/6 | Complete   | 2026-03-03 |
-| 4. Network Destinations | 0/TBD | Not started | - |
+| 4. Network Destinations | 0/8 | Not started | - |
 | 5. ALS Parser | 0/TBD | Not started | - |
 | 6. GitHub Destination | 0/TBD | Not started | - |

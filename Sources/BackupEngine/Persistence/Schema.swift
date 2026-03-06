@@ -82,5 +82,17 @@ public enum Schema {
                 t.column("lastTriggeredAt", .datetime)
             }
         }
+
+        migrator.registerMigration("v3_als_sample_tracking") { db in
+            // Add ALS sample tracking columns to backupVersion.
+            // All columns have defaults so existing rows decode without error.
+            try db.alter(table: "backupVersion") { t in
+                t.add(column: "collectedSampleCount", .integer).defaults(to: 0)
+                t.add(column: "collectedSamplePaths", .text)       // JSON array of path strings, nullable
+                t.add(column: "missingSampleCount", .integer).defaults(to: 0)
+                t.add(column: "missingSamplePaths", .text)         // JSON array of path strings, nullable
+                t.add(column: "hasParseWarning", .boolean).notNull().defaults(to: false)
+            }
+        }
     }
 }

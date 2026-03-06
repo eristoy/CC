@@ -76,6 +76,55 @@ public actor BackupEngine {
 
         logger.info("executeJob: start — project=\(project.id, privacy: .public) destinations=\(targetAdapters.map(\.id), privacy: .public)")
 
+        // versionID is assigned here (before step 0) so notifications can reference it
+        // before the pending DB rows are created in step 4. No behavior change — versionID
+        // was previously assigned just before step 4 and the same value is used throughout.
+        let versionID = VersionManager.newVersionID()
+
+        // Step 0: Parse .als file to discover external samples before any file copying.
+        // Locked decision: parse before file-copy; caller (BackupCoordinator) sends
+        // notifications after inspecting sampleCollection in BackupJobResult.
+        let projectURL = URL(fileURLWithPath: project.path)
+
+        // Find the .als file that triggered this job.
+        // Use FileManager to enumerate *.als files at the top level of the project folder.
+        // The FSEventsWatcher fires on the specific .als file, but BackupJob only carries the project path.
+        // Find the newest (most recently modified) .als at the project root — handles multi-ALS projects.
+        let alsURL: URL? = {
+            let fm = FileManager.default
+            let contents = (try? fm.contentsOfDirectory(at: projectURL, includingPropertiesForKeys: [.contentModificationDateKey], options: [.skipsHiddenFiles])) ?? []
+            let alsFiles = contents.filter { $0.pathExtension == "als" }
+            return alsFiles.max {
+                let dateA = (try? $0.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate ?? .distantPast
+                let dateB = (try? $1.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate ?? .distantPast
+                return dateA < dateB
+            }
+        }()
+
+        // Compute sampleCollection as a let so it can be safely captured in concurrent closures.
+        let sampleCollection: SampleCollection = {
+            guard let alsURL else {
+                logger.debug("executeJob: no .als file found in project; skipping ALS parse")
+                return .empty
+            }
+            logger.info("executeJob: parsing .als — \(alsURL.lastPathComponent, privacy: .public)")
+            switch ALSParser.parse(alsURL: alsURL, projectDirectory: projectURL) {
+            case .parseFailure(let reason):
+                logger.warning("executeJob: ALS parse failed — \(reason, privacy: .public); proceeding with plain folder backup")
+                return .parseFailure
+            case .success(let external, _):
+                // Classify external samples: available on disk vs missing/offline
+                let available = external.filter { FileManager.default.fileExists(atPath: $0.path) }
+                let missing   = external.filter { !FileManager.default.fileExists(atPath: $0.path) }
+                logger.info("executeJob: ALS parsed — external=\(external.count) available=\(available.count) missing=\(missing.count)")
+                return SampleCollection(
+                    collectedPaths: available,
+                    missingPaths: missing,
+                    hasParseWarning: false
+                )
+            }
+        }()
+
         // 1. Resolve all files in the project directory.
         let allFiles = try ProjectResolver.resolve(at: URL(fileURLWithPath: project.path))
 
@@ -113,7 +162,6 @@ public actor BackupEngine {
         logger.info("executeJob: incremental filter — copy=\(filesToCopy.count) skipped=\(skippedCount)")
 
         // 4. Create a pending BackupVersion row for each destination.
-        let versionID = VersionManager.newVersionID()
         for adapter in targetAdapters {
             let version = BackupVersion(
                 id: versionID,
@@ -168,6 +216,31 @@ public actor BackupEngine {
         }
 
         logger.info("executeJob: fan-out complete — results=\(destinationResults.map { "\($0.destinationID):\($0.status)" }, privacy: .public)")
+
+        // After the TaskGroup fan-out (step 6), copy external samples and write rewritten .als.
+        // Only runs if we successfully parsed an .als with no parse warning.
+        if let alsURL, !sampleCollection.hasParseWarning {
+            for adapter in targetAdapters {
+                let versionDir = URL(fileURLWithPath: adapter.config.rootPath).appendingPathComponent(versionID)
+                // Copy external samples to Samples/Imported/<full-original-path>
+                for sampleURL in sampleCollection.collectedPaths {
+                    let relativePath = ALSRewriter.importedRelativePath(for: sampleURL)
+                    let destURL = versionDir.appendingPathComponent(relativePath)
+                    let destDir = destURL.deletingLastPathComponent()
+                    try? FileManager.default.createDirectory(at: destDir, withIntermediateDirectories: true)
+                    try? FileManager.default.copyItem(at: sampleURL, to: destURL)
+                }
+                // Rewrite .als: update paths to Samples/Imported/ and re-gzip
+                let alsName = alsURL.lastPathComponent
+                let outputALSURL = versionDir.appendingPathComponent(alsName)
+                try? ALSRewriter.rewriteAndCompress(
+                    alsURL: alsURL,
+                    externalSamples: sampleCollection.collectedPaths,
+                    backupProjectURL: versionDir,
+                    outputURL: outputALSURL
+                )
+            }
+        }
 
         // 7. Build manifest from the records now in the database.
         //    Use pool.write (not read) to ensure we see the records just inserted above,
@@ -273,6 +346,37 @@ public actor BackupEngine {
             fileEntryCache[project.id] = nextCache
         }
 
+        // Persist sample collection metadata to backupVersion rows.
+        // Run regardless of parse outcome so the DB always reflects ALS results:
+        // - No .als found: all zeros, hasParseWarning=false (empty defaults)
+        // - Parse succeeded: counts and paths populated
+        // - Parse failed: hasParseWarning=true, counts zero
+        if alsURL != nil || sampleCollection.hasParseWarning {
+            let collectedJSON = BackupVersion.encodePaths(sampleCollection.collectedPaths)
+            let missingJSON   = BackupVersion.encodePaths(sampleCollection.missingPaths)
+            try? await db.pool.write { database in
+                try database.execute(
+                    sql: """
+                        UPDATE backupVersion
+                        SET collectedSampleCount = ?,
+                            collectedSamplePaths = ?,
+                            missingSampleCount   = ?,
+                            missingSamplePaths   = ?,
+                            hasParseWarning      = ?
+                        WHERE id = ?
+                        """,
+                    arguments: [
+                        sampleCollection.collectedCount,
+                        collectedJSON,
+                        sampleCollection.missingCount,
+                        missingJSON,
+                        sampleCollection.hasParseWarning,
+                        versionID
+                    ]
+                )
+            }
+        }
+
         let finalStatus: VersionStatus = allVerified ? .verified : .corrupt
         logger.info("executeJob: complete — versionID=\(versionID, privacy: .public) status=\(finalStatus.rawValue, privacy: .public)")
         return BackupJobResult(
@@ -282,7 +386,8 @@ public actor BackupEngine {
             filesSkipped: skippedCount,
             totalBytes: manifest.totalBytes,
             status: finalStatus,
-            destinationResults: destinationResults
+            destinationResults: destinationResults,
+            sampleCollection: sampleCollection
         )
     }
 

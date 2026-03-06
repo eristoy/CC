@@ -343,7 +343,19 @@ final class BackupCoordinator {
             }
 
             let job = BackupJob(project: project, destinationIDs: [bootstrapDestID])
-            _ = try await engine.runJob(job)
+            let result = try await engine.runJob(job)
+
+            // Send ALS sample warnings before the overall success notification (PRSR-01, PRSR-02).
+            // BackupEngine returns sampleCollection in the result; coordinator owns notification dispatch.
+            if result.sampleCollection.hasParseWarning {
+                NotificationService.sendALSParseWarning(projectName: projectName, versionID: result.versionID)
+            } else if result.sampleCollection.missingCount > 0 {
+                NotificationService.sendMissingSamplesWarning(
+                    projectName: projectName,
+                    count: result.sampleCollection.missingCount,
+                    versionID: result.versionID
+                )
+            }
 
             status = .idle
             lastBackupAt = Date()

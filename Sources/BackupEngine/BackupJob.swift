@@ -37,6 +37,9 @@ public struct BackupJobResult: Sendable {
     public let totalBytes: Int64
     public let status: VersionStatus
     public let destinationResults: [DestinationResult]
+    /// Sample collection outcome for this job. Used by the caller (BackupCoordinator)
+    /// to send missing-sample or parse-warning notifications (PRSR-01, PRSR-02).
+    public let sampleCollection: SampleCollection
 
     public init(
         versionID: String,
@@ -45,7 +48,8 @@ public struct BackupJobResult: Sendable {
         filesSkipped: Int,
         totalBytes: Int64,
         status: VersionStatus,
-        destinationResults: [DestinationResult]
+        destinationResults: [DestinationResult],
+        sampleCollection: SampleCollection = .empty
     ) {
         self.versionID = versionID
         self.projectID = projectID
@@ -54,5 +58,6 @@ public struct BackupJobResult: Sendable {
         self.totalBytes = totalBytes
         self.status = status
         self.destinationResults = destinationResults
+        self.sampleCollection = sampleCollection
     }
 }

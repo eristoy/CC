@@ -23,9 +23,9 @@ See: .planning/PROJECT.md (updated 2026-02-25)
 ## Current Position
 
 Phase: 5 of 6 (ALS Parser) — In Progress
-Plan: 1 of 3 in current phase (05-01 complete — ALS parser foundation done)
-Status: Phase 5 In Progress — plan 01 complete, plans 02 and 03 remaining
-Last activity: 2026-03-06 — Completed plan 05-01 (ALS parser foundation: ALSParser, ALSRewriter, SampleCollection, Schema v3 migration, BackupVersion ALS fields; BUILD SUCCEEDED)
+Plan: 2 of 3 in current phase (05-02 complete — ALS pipeline integration done)
+Status: Phase 5 In Progress — plans 01-02 complete, plan 03 remaining
+Last activity: 2026-03-06 — Completed plan 05-02 (ALS parse-before-copy wired into BackupEngine; external samples to Samples/Imported/; .als rewritten + re-gzipped; DB rows updated with 5 ALS columns; BackupJobResult carries SampleCollection; coordinator sends ALS notifications; BUILD SUCCEEDED)
 
 Progress: [██████████] 52% (13 of 25 total plans estimated)
 
@@ -59,6 +59,7 @@ Progress: [██████████] 52% (13 of 25 total plans estimated)
 | Phase 03-settings-history P05 | 5 | 2 tasks | 0 files |
 | Phase 03-settings-history P06 | 50 | 2 tasks | 2 files |
 | Phase 05-als-parser P01 | 3 | 2 tasks | 5 files |
+| Phase 05-als-parser P02 | 5 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -120,6 +121,9 @@ Recent decisions affecting current work:
 - [Phase 05-als-parser]: importedRelativePath preserves full absolute path as subfolder under Samples/Imported/ — mirrors Ableton Collect All and Save, zero collisions
 - [Phase 05-als-parser]: zlib inflateInit2_ MAX_WBITS+32 for gzip auto-detect — NSData.decompressed uses raw DEFLATE and fails on .als files
 - [Phase 05-als-parser]: Swift 6 exclusive-access fix: capture local capacity snapshots before nested withUnsafeMutableBytes to avoid overlapping borrow errors
+- **[05-02]** NotificationService stays in app target; BackupEngine returns SampleCollection in BackupJobResult; BackupCoordinator dispatches ALS notifications — preserves module boundary (BackupEngine cannot import UserNotifications)
+- **[05-02]** sampleCollection computed as let via immediately-invoked closure to satisfy Swift 6 concurrent-capture exclusivity in TaskGroup closures
+- **[05-02]** versionID moved before step 0 (was before step 4) — ALS parse and notification dispatch reference correct versionID before any file writes
 
 ### Pending Todos
 
@@ -137,5 +141,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-06
-Stopped at: Completed 05-01-PLAN.md — ALS parser foundation: ALSParser (gzip decompress via system zlib + XPath sample extraction + external/internal classification), ALSRewriter (XMLDocument path mutation + gzip re-compression to Samples/Imported/ layout), SampleCollection result type, Schema v3_als_sample_tracking migration (5 columns), BackupVersion 5 ALS fields with defaults; BUILD SUCCEEDED
+Stopped at: Completed 05-02-PLAN.md — ALS parse-before-copy wired into BackupEngine (Step 0 before ProjectResolver), external samples copied to Samples/Imported/, .als rewritten + re-gzipped via ALSRewriter, all 5 ALS DB columns persisted, BackupJobResult carries SampleCollection, BackupCoordinator sends ALS notifications; BUILD SUCCEEDED
 Resume file: None

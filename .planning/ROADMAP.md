@@ -112,7 +112,12 @@ Plans:
   1. When backing up a project, the app parses the .als file and identifies all sample paths referenced in the project, including samples stored outside the project folder
   2. All identified external samples are included in the backup alongside the project folder contents
   3. If a referenced sample is missing or on an offline drive, the user sees a warning before the backup completes (backup still proceeds with available files)
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 05-01-PLAN.md — ALSParser, ALSRewriter, SampleCollection types; Schema v3 migration; BackupVersion model extension
+- [ ] 05-02-PLAN.md — BackupEngine ALS pipeline integration; NotificationService missing-sample warnings; sample data persisted to DB
+- [ ] 05-03-PLAN.md — HistoryView warning badges, VersionDetailView (collected + missing paths), notification-tap navigation
 
 ### Phase 6: GitHub Destination
 **Goal**: Users can back up projects to a GitHub repository using Git LFS for audio files, with quota monitoring and no dependency on system-installed git tools
@@ -136,5 +141,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 2. App Shell + Triggers | 6/7 | In Progress|  |
 | 3. Settings + History | 6/6 | Complete   | 2026-03-03 |
 | 4. Network Destinations | 0/8 | Not started | - |
-| 5. ALS Parser | 0/TBD | Not started | - |
+| 5. ALS Parser | 0/3 | Not started | - |
 | 6. GitHub Destination | 0/TBD | Not started | - |

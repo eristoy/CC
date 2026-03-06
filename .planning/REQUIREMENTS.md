@@ -21,8 +21,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### ALS Parser
 
-- [ ] **PRSR-01**: App parses `.als` files (gzipped XML) to extract all referenced sample paths
-- [ ] **PRSR-02**: App collects samples stored outside the project folder for inclusion in backup
+- [x] **PRSR-01**: App parses `.als` files (gzipped XML) to extract all referenced sample paths
+- [x] **PRSR-02**: App collects samples stored outside the project folder for inclusion in backup
 
 ### Backup Engine
 
@@ -117,8 +117,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DEST-04 | Phase 4 | Pending |
 | DEST-06 | Phase 4 | Pending |
 | DEST-07 | Phase 4 | Pending |
-| PRSR-01 | Phase 5 | Pending |
-| PRSR-02 | Phase 5 | Pending |
+| PRSR-01 | Phase 5 | Complete |
+| PRSR-02 | Phase 5 | Complete |
 | DEST-05 | Phase 6 | Pending |
 
 **Coverage:**

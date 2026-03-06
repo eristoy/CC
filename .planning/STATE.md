@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-03T15:12:30.084Z"
+last_updated: "2026-03-06T19:56:28.177Z"
 progress:
-  total_phases: 3
+  total_phases: 5
   completed_phases: 2
-  total_plans: 18
-  completed_plans: 17
+  total_plans: 29
+  completed_plans: 18
 ---
 
 # Project State
@@ -22,10 +22,10 @@ See: .planning/PROJECT.md (updated 2026-02-25)
 
 ## Current Position
 
-Phase: 3 of 6 (Settings + History) — COMPLETE (gap closure done)
-Plan: 6 of 6 in current phase (03-06 complete — Phase 3 gap closure done)
-Status: Phase 3 COMPLETE — all six plans complete (five main + one gap closure for APP-04)
-Last activity: 2026-03-03 — Completed plan 03-06 (APP-04 gap closed: schedule interval Picker added to GeneralSettingsView, BackupCoordinator reads UserDefaults on startup and exposes updateScheduleInterval(_:); BUILD SUCCEEDED)
+Phase: 5 of 6 (ALS Parser) — In Progress
+Plan: 1 of 3 in current phase (05-01 complete — ALS parser foundation done)
+Status: Phase 5 In Progress — plan 01 complete, plans 02 and 03 remaining
+Last activity: 2026-03-06 — Completed plan 05-01 (ALS parser foundation: ALSParser, ALSRewriter, SampleCollection, Schema v3 migration, BackupVersion ALS fields; BUILD SUCCEEDED)
 
 Progress: [██████████] 52% (13 of 25 total plans estimated)
 
@@ -58,6 +58,7 @@ Progress: [██████████] 52% (13 of 25 total plans estimated)
 | Phase 03-settings-history P04 | 2 | 2 tasks | 2 files |
 | Phase 03-settings-history P05 | 5 | 2 tasks | 0 files |
 | Phase 03-settings-history P06 | 50 | 2 tasks | 2 files |
+| Phase 05-als-parser P01 | 3 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -115,6 +116,10 @@ Recent decisions affecting current work:
 - [Phase 03-05]: Human verification checkpoint passed — all Phase 3 features confirmed working by user without issues
 - [Phase 03-06]: scheduleIntervalSeconds stored as Int (seconds) in UserDefaults — @AppStorage in view, UserDefaults.standard.integer in coordinator, consistent with autoBackupEnabled pattern
 - [Phase 03-06]: updateScheduleInterval calls scheduler.start() directly — SchedulerTask.start() cancels existing task before starting new one, no explicit stop() needed
+- [Phase 05-als-parser]: ALSParser.parse() returns ParseResult (not throws) so backup engine always gets a usable result and applies fallback policy at call site
+- [Phase 05-als-parser]: importedRelativePath preserves full absolute path as subfolder under Samples/Imported/ — mirrors Ableton Collect All and Save, zero collisions
+- [Phase 05-als-parser]: zlib inflateInit2_ MAX_WBITS+32 for gzip auto-detect — NSData.decompressed uses raw DEFLATE and fails on .als files
+- [Phase 05-als-parser]: Swift 6 exclusive-access fix: capture local capacity snapshots before nested withUnsafeMutableBytes to avoid overlapping borrow errors
 
 ### Pending Todos
 
@@ -131,6 +136,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-03
-Stopped at: Completed 03-06-PLAN.md — APP-04 gap closed: schedule interval configurable (30 min/1 hr/2 hr/4 hr) via Picker in GeneralSettingsView; BackupCoordinator reads interval from UserDefaults on startup and restarts scheduler immediately on change; Phase 3 gap closure fully complete
+Last session: 2026-03-06
+Stopped at: Completed 05-01-PLAN.md — ALS parser foundation: ALSParser (gzip decompress via system zlib + XPath sample extraction + external/internal classification), ALSRewriter (XMLDocument path mutation + gzip re-compression to Samples/Imported/ layout), SampleCollection result type, Schema v3_als_sample_tracking migration (5 columns), BackupVersion 5 ALS fields with defaults; BUILD SUCCEEDED
 Resume file: None

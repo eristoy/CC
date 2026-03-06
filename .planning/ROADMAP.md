@@ -141,5 +141,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 2. App Shell + Triggers | 6/7 | In Progress|  |
 | 3. Settings + History | 6/6 | Complete   | 2026-03-03 |
 | 4. Network Destinations | 0/8 | Not started | - |
-| 5. ALS Parser | 0/3 | Not started | - |
+| 5. ALS Parser | 1/3 | In Progress|  |
 | 6. GitHub Destination | 0/TBD | Not started | - |

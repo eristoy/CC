@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-06T19:56:28.177Z"
+last_updated: "2026-03-06T20:08:17.911Z"
 progress:
   total_phases: 5
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 29
-  completed_plans: 18
+  completed_plans: 20
 ---
 
 # Project State
@@ -22,10 +22,10 @@ See: .planning/PROJECT.md (updated 2026-02-25)
 
 ## Current Position
 
-Phase: 5 of 6 (ALS Parser) — In Progress
-Plan: 2 of 3 in current phase (05-02 complete — ALS pipeline integration done)
-Status: Phase 5 In Progress — plans 01-02 complete, plan 03 remaining
-Last activity: 2026-03-06 — Completed plan 05-02 (ALS parse-before-copy wired into BackupEngine; external samples to Samples/Imported/; .als rewritten + re-gzipped; DB rows updated with 5 ALS columns; BackupJobResult carries SampleCollection; coordinator sends ALS notifications; BUILD SUCCEEDED)
+Phase: 5 of 6 (ALS Parser) — Complete
+Plan: 3 of 3 in current phase (05-03 complete — HistoryView ALS sample UI done)
+Status: Phase 5 Complete — all 3 plans done
+Last activity: 2026-03-06 — Completed plan 05-03 (HistoryView warning badges for missing samples / parse failures; VersionDetailView drill-down with collected+missing path lists; navigateToVersion notification observer opens Settings and selects correct project+version; BUILD SUCCEEDED)
 
 Progress: [██████████] 52% (13 of 25 total plans estimated)
 
@@ -60,6 +60,7 @@ Progress: [██████████] 52% (13 of 25 total plans estimated)
 | Phase 03-settings-history P06 | 50 | 2 tasks | 2 files |
 | Phase 05-als-parser P01 | 3 | 2 tasks | 5 files |
 | Phase 05-als-parser P02 | 5 | 2 tasks | 4 files |
+| Phase 05-als-parser P03 | 2 | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -124,6 +125,8 @@ Recent decisions affecting current work:
 - **[05-02]** NotificationService stays in app target; BackupEngine returns SampleCollection in BackupJobResult; BackupCoordinator dispatches ALS notifications — preserves module boundary (BackupEngine cannot import UserNotifications)
 - **[05-02]** sampleCollection computed as let via immediately-invoked closure to satisfy Swift 6 concurrent-capture exclusivity in TaskGroup closures
 - **[05-02]** versionID moved before step 0 (was before step 4) — ALS parse and notification dispatch reference correct versionID before any file writes
+- [Phase 05-03]: NavigationLink(value:) + Hashable BackupEvent chosen for programmatic deep-link navigation via selectedEventForNavigation state binding
+- [Phase 05-03]: navigateToVersionID binding wired from HistoryView to VersionListView; consumed in onChange(of: events) to auto-navigate when project data loads after notification tap
 
 ### Pending Todos
 

@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 2: App Shell + Triggers** - LSUIElement app, menu bar icon, FSEvents watch, schedule, manual trigger, notifications
 - [x] **Phase 3: Settings + History** - Settings window, watch folder management, version history browser (completed 2026-03-02)
 - [ ] **Phase 4: Network Destinations** - NAS (SMB/NFS), iCloud Drive, per-destination status, sleep/wake reconnection
-- [ ] **Phase 5: ALS Parser** - Parse .als files to resolve external sample paths; warn on missing samples
+- [x] **Phase 5: ALS Parser** - Parse .als files to resolve external sample paths; warn on missing samples (completed 2026-03-06)
 - [ ] **Phase 6: GitHub Destination** - Git LFS destination with bundled binaries and quota management
 
 ## Phase Details
@@ -141,5 +141,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 2. App Shell + Triggers | 6/7 | In Progress|  |
 | 3. Settings + History | 6/6 | Complete   | 2026-03-03 |
 | 4. Network Destinations | 0/8 | Not started | - |
-| 5. ALS Parser | 2/3 | In Progress|  |
+| 5. ALS Parser | 3/3 | Complete   | 2026-03-06 |
 | 6. GitHub Destination | 0/TBD | Not started | - |
